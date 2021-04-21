@@ -50,7 +50,6 @@ def clave():    #Funcion para permitir acceso a determinadas funciones
     clave=input("Digite la contraseña: ")
     f=open("contraseña.txt", "r")
     contraseña=f.read()
-    print(contraseña)
     f.close()
     return valid(clave, contraseña, 2) #Inicialmente hay 3 intentos. Al primer error, quedarán 2 (ese 2 se imprime con el mensaje de error)
 def valid(clave, contraseña, intentos):
@@ -151,8 +150,143 @@ Restricciones: No pueden existir empresas con la misma cédula
                       No pueden eliminarse empresas que hayan sido asociados algún transporte. 
 """
 def gestionEmpresa():
+    print("""
+Menu:
+    1- Incluir empresas
+    2- Eliminar empresas
+    3- Modificar empresas
+    4- Mostrar empresas
+    5- Volver
+    """)
+    return Opcion()
+def Opcion():
+    op=str(input("Seleccione una opción: "))
+    if(op=="1"):
+        return incluirEmp()
+    if(op=="2"):
+        return borrarEmp()
+    if(op=="3"):
+        return modifEmp()
+    if(op=="4"):
+        return mostrarEmp()
+    if(op=="5"):
+        return Menu()
+    else:
+        print("digite una de las opciones disponibles")
+        return Opcion()
+         #====================Funciones de gestión de empresas====================#
+"""
+incluirEmp
+Esta funcion agrega una nueva empresa
+E: Cédula 
+    Nombre  
+    Ubicación (dirección del negocio)
+S: Se debe agregar el contacto al archivo Empresas.txt
+R: La cédula debe tener 10 dígitos
+    No pueden existir 2 empresas con la misma cédula
+"""
+def incluirEmp():
+        return AgregarCedula()
+"============================================="
+def contarDigitos(num):
+    if (num<=9):
+        return 1
+    else:
+        return 1+contarDigitos(num//10)
+def AgregarCedula():
+    Cedula=int(input("Ingrese la cédula: "))
+    if(contarDigitos(Cedula)!=10):
+        print("La cédula debe tener 10 dígitos")
+        return AgregarCedula()
+    else:
+        f=open("Empresas.txt",'r')
+        mensaje = f.readlines()
+        f.close()
+        Cedula=str(Cedula)
+        return verificar(Cedula, mensaje)
+"============================================="
+def verificar(Cedula, mensaje):
+    Cedula=str(Cedula)
+    if mensaje==[]:
+        return agregar(Cedula)
+    if(Cedula not in mensaje[0]):
+        return verificar(Cedula, mensaje[1:])
+    else:
+        print("Error: la cédula ya está relacionada a una empresa")
+        return AgregarCedula()
+"============================================="
+def agregar(Cedula):
+    f = open ("Empresas.txt",'a')
+    f.write((Cedula+" | "))
+    f.close()
+    return nombreEmpresa()
+"============================================="
+def nombreEmpresa():
+    Nombre=str(input("Nombre de la entidad: "))
+    f = open ("Empresas.txt",'a')
+    f.write((Nombre+" | "))
+    f.close()
+    return ubicacion()
+"============================================="
+def ubicacion():
+    ubic=str(input("Dirección de la empresa: "))
+    f = open ("Empresas.txt",'a')
+    f.write((ubic+" | \n"))
+    f.close()
+    time.sleep(0.5)
+    print("La empresa ha sido agregada con éxito")
+    time.sleep(0.5)
+    return gestionEmpresa()
+"========================================================================"
+"""
+borrarEmp
+Esta función sirve para borrar una empresa del registro
+E: numero de cedula de la empresa
+S: Debe borrar la empresa identificada con la cédula
+R: No se puede borrar a empresas relacionadas con un transporte
+"""
+def borrarEmp():
+    ClaveBorrar=(input("Digite el número de cédula: "))
+    return revisarTransporte(ClaveBorrar)
+def revisarTransporte(ClaveBorrar):
+    archivo=open("Transportes.txt", "r")
+    mensaje= archivo.readlines()
+    archivo.close()
+    return revisarAux(ClaveBorrar, mensaje)
+def revisarAux(ClaveBorrar, mensaje):
+    if mensaje==[]:
+        return borrarEmpAux(ClaveBorrar)
+    if(ClaveBorrar not in mensaje[0]):
+        return revisarAux(ClaveBorrar, mensaje[1:])
+    else:
+        print("Error: No se pudo borrar la empresa porque está vinculada a un transporte")
+        return borrarEmp()
+def borrarEmpAux(ClaveBorrar):
+    f = open("Empresas.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Empresas.txt","w")
+    for linea in lineas:
+        if ClaveBorrar not in linea:
+            f.write(linea)
+    f.close()
+    print("La empresa ha sido eliminada")
+    time.sleep(0.5)
+    return gestionEmpresa()
+"========================================================================"
+def modifEmp():
     pass
-    return Menu()
+"========================================================================"
+def mostrarEmp():
+    time.sleep(0.5)
+    print("Empresas registradas")
+    print("    Cedula     |    Empresa    |   Ubicación de la empresa   ")
+    f = open ("Empresas.txt",'r') 
+    mensaje = f.read()
+    print(mensaje)
+    f.close()
+    time.sleep(2)
+    return gestionEmpresa()
 #====================================================================================================================================================
 """
 gestionTransporte
@@ -176,8 +310,125 @@ Salidas: Permite incluir transportes
                       No pueden eliminarse transportes que estén registrados en un viaje 
 """
 def gestionTransporte():
-    pass
-    return Menu()
+    print("""
+Menu:
+    1- Incluir transportes
+    2- Eliminar transportes
+    3- Modificar transportes
+    4- Mostrar transportes
+    5- Volver
+    """)
+    return OPC()
+def OPC():
+    op=str(input("Seleccione una opción: "))
+    if(op=="1"):
+        return incluirTransport()
+    if(op=="2"):
+        return borrarTransport()
+    if(op=="3"):
+        return modifTransport()
+    if(op=="4"):
+        return mostrarTransport()
+    if(op=="5"):
+        return Menu()
+    else:
+        print("digite una de las opciones disponibles")
+        return OPC()
+         #====================Funciones de gestión de Transportes====================#
+def incluirTransport():
+    return AgregarPlaca()
+"============================================="
+def AgregarPlaca():
+    Placa=int(input("Ingrese el número de matrícula: "))
+    if(contarDigitos(Placa)!=6):
+        print("La placa debe tener 6 dígitos")
+        return AgregarPlaca()
+    else:
+        f=open("Transportes.txt",'r')
+        mensaje = f.readlines()
+        f.close()
+        Placa=str(Placa)
+        return Matricula(Placa, mensaje)
+"============================================="
+def Matricula(Placa, mensaje):
+    if mensaje==[]:
+        return AddMatricula(Placa)
+    if(Placa not in mensaje[0]):
+        return Matricula(Placa, mensaje[1:])
+    else:
+        print("Error: El número de matrícula pertenece a otro transporte")
+        return AgregarPlaca()
+"============================================="
+def AddMatricula(Placa):
+    f = open ("Transportes.txt",'a')
+    f.write((Placa+" | "))
+    f.close()
+    return Marca()
+"============================================="
+def Marca():
+    marca=str(input("Marca del transporte: "))
+    f = open ("Transportes.txt",'a')
+    f.write((marca+" | "))
+    f.close()
+    return Modelo()
+"============================================="
+def Modelo():
+    modelo=str(input("Modelo: "))
+    f = open ("Transportes.txt",'a')
+    f.write((modelo+" | "))
+    f.close()
+    return Year()
+"============================================="
+def Year():
+    year=str(input("Año: "))
+    f = open ("Transportes.txt",'a')
+    f.write((year+" | "))
+    f.close()
+    return Empresa()
+"============================================="
+def Empresa():
+    time.sleep(0.5)
+    print("Empresas registradas")
+    print(" Cedula  |  Empresa  |        Ubicación de la empresa        |   Transportes")
+    f = open ("Empresas.txt",'r') 
+    mensaje = f.read()
+    print(mensaje)
+    f.close()
+    time.sleep(2)
+    eleccion=str(input("Ingrese la cédula de una empresa: "))
+    f = open ("Transportes.txt",'a')
+    f.write((eleccion+" | "))
+    f.close()
+    return asientos()
+"============================================="
+def asientos():
+    print("Cantidad de asientos")
+    VIP=str(input("Clase VIP: "))
+    NORMAL=str(input("Clase Normal: "))
+    ECONOM=str(input("Clase Económica: "))
+    f = open ("Transportes.txt",'a')
+    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" | \n"))
+    f.close()
+    time.sleep(0.5)
+    print("El transporte ha sido agregado con éxito")
+    time.sleep(0.5)
+    return gestionTransporte()
+"============================================="
+def borrarTransport():
+    return gestionTransporte()
+def modifTransport():
+    return gestionTransporte()
+def mostrarTransport():
+    time.sleep(0.5)
+    print("Transportes registrados")
+    print(" Matrícula  |  Marca  | Modelo | Año | Cédula de la Empresa | Asientos VIP - Normales - Económicos")
+    f = open ("Transportes.txt",'r') 
+    mensaje = f.read()
+    print(mensaje)
+    f.close()
+    time.sleep(2)
+    return gestionTransporte()
+    
 #====================================================================================================================================================
 """
 gestionViaje
@@ -197,7 +448,6 @@ Salidas: Registra la información del viaje
 Restricciones: Ninguna
 """
 def gestionViaje():
-    pass
     return Menu()
 #====================================================================================================================================================
 """
