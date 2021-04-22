@@ -139,7 +139,7 @@ def entrada():
 gestionEmpresa
 Esta funcion permite dar mantenimiento a las empresas.
 Entradas por empresa:
- Cédula (10 dígitos), 
+ Cédula (10 dígitos)
  Nombre  
  Ubicación (dirección del negocio).
 Salidas: Permite incluir empresas
@@ -277,6 +277,10 @@ def borrarEmpAux(ClaveBorrar):
 def modifEmp():
     pass
 "========================================================================"
+"""
+mostrarEmp
+Muestra una lista con todas las empresas
+"""
 def mostrarEmp():
     time.sleep(0.5)
     print("Empresas registradas")
@@ -335,6 +339,23 @@ def OPC():
         print("digite una de las opciones disponibles")
         return OPC()
          #====================Funciones de gestión de Transportes====================#
+"""
+incluirTransport
+Esta funcion permite incluir transportes
+Entradas
+ placa (6 digitos)
+ Marca  
+ Modelo
+ Año
+ Empresa (una de la lista de empresas) 'Se usa como entrada el nombre de la empresa'
+ Cantidad de asientos
+        clase VIP
+        clase normal
+        clase económica
+Salidas: Agrega el transporte en el archivo 'Transportes.txt'
+ Restricciones: No pueden existir 2 transportes con la misma placa
+                      No pueden eliminarse transportes que estén registrados en un viaje 
+"""
 def incluirTransport():
     return AgregarPlaca()
 "============================================="
@@ -389,13 +410,13 @@ def Year():
 def Empresa():
     time.sleep(0.5)
     print("Empresas registradas")
-    print(" Cedula  |  Empresa  |        Ubicación de la empresa        |   Transportes")
+    print(" Cedula  |  Empresa  |        Ubicación de la empresa        ")
     f = open ("Empresas.txt",'r') 
     mensaje = f.read()
     print(mensaje)
     f.close()
     time.sleep(2)
-    eleccion=str(input("Ingrese la cédula de una empresa: "))
+    eleccion=str(input("Ingrese el nombre de una empresa: "))
     f = open ("Transportes.txt",'a')
     f.write((eleccion+" | "))
     f.close()
@@ -415,24 +436,51 @@ def asientos():
     return gestionTransporte()
 "============================================="
 def borrarTransport():
+    Borrar=(input("Digite el número de matrícula: "))
+    return verificacionTransp(Borrar)
+def verificacionTransp(Borrar):
+    archivo=open("Viajes.txt", "r")
+    mensaje= archivo.readlines()
+    archivo.close()
+    return VerifTransAux(Borrar, mensaje)
+def VerifTransAux(Borrar, mensaje):
+    if mensaje==[]:
+        return borrarTranspAux(Borrar)
+    if(Borrar not in mensaje[0]):
+        return VerifTransAux(Borrar, mensaje[1:])
+    else:
+        print("Error: No se pudo borrar. El transporte está registrado en un viaje")
+        return borrarTransport()
+def borrarTranspAux(Borrar):
+    f = open("Transportes.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Transportes.txt","w")
+    for linea in lineas:
+        if Borrar not in linea:
+            f.write(linea)
+    f.close()
+    print("El transporte ha sido eliminado")
+    time.sleep(0.5)
     return gestionTransporte()
+"============================================="
 def modifTransport():
     return gestionTransporte()
+"============================================="
 def mostrarTransport():
     time.sleep(0.5)
     print("Transportes registrados")
-    print(" Matrícula  |  Marca  | Modelo | Año | Cédula de la Empresa | Asientos VIP - Normales - Económicos")
+    print(" Matrícula  |  Marca  | Modelo | Año |  Empresa  | Asientos VIP - Normales - Económicos")
     f = open ("Transportes.txt",'r') 
     mensaje = f.read()
     print(mensaje)
     f.close()
     time.sleep(2)
     return gestionTransporte()
-    
-#====================================================================================================================================================
+         #====================Funciones de gestión de Transportes====================#
 """
 gestionViaje
-Esta funcion permite registrar viajes
+Esta funcion permite incluir, eliminar, modificar y mostrar viajes
 Entradas por viaje
  Número de viaje (autogenerado)
  Ciudad de salida
@@ -448,16 +496,173 @@ Salidas: Registra la información del viaje
 Restricciones: Ninguna
 """
 def gestionViaje():
-    return Menu()
+    print("""
+Menu:
+    1- Incluir viajes
+    2- Eliminar viajes
+    3- Modificar viajes
+    4- Mostrar viajes
+    5- Volver
+    """)
+    return OPCION()
+def OPCION():
+    op=str(input("Seleccione una opción: "))
+    if(op=="1"):
+        return incluirViaje()
+    if(op=="2"):
+        return borrarViaje()
+    if(op=="3"):
+        return modifViaje()
+    if(op=="4"):
+        return mostrarViaje()
+    if(op=="5"):
+        return Menu()
+    else:
+        print("digite una de las opciones disponibles")
+        return OPCION()
+         #====================Funciones de gestión de viajes====================#
+def incluirViaje():
+    return NumViaje()
+"============================================="
+import random
+def NumViaje():
+    NumViaje=random.randint(1000, 9999)
+    f=open("Viajes.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    NumViaje=str(NumViaje)
+    return Revision(NumViaje, mensaje)
+"============================================="
+def Revision(NumViaje, mensaje):  #Funcion para que no se repitan numeros de viaje
+    if mensaje==[]:
+        return ViajeNum(NumViaje)
+    if(NumViaje not in mensaje[0]):
+        return Revision(NumViaje, mensaje[1:])
+    else:
+        return NumViaje()  
+"============================================="
+def ViajeNum(NumViaje):
+    f = open ("Viajes.txt",'a')
+    f.write((NumViaje+" | "))
+    f.close()
+    return Salida()
+"============================================="
+def Salida():
+    Salida=str(input("Ciudad de salida: "))
+    FechaSalida=(input("Ingrese la fecha de salida en formato dd/mm/aaaa: "))
+    HoraSalida=(input("Ingrese la hora de salida en formato '00-24' h: "))
+    Llegada=str(input("Ciudad de llegada: "))
+    FechaLlegada=(input("Ingrese la fecha de llegada en formato dd/mm/aaaa: "))
+    HoraLlegada=(input("Ingrese la hora de llegada en formato '00-24' h: "))
+    f=open("Viajes.txt", "a")
+    f.write(Salida+" | "+FechaSalida+" "+HoraSalida+" | "+Llegada+" | "+FechaLlegada+" "+HoraLlegada+" | ")
+    f.close()
+    return EmpresaViaje()
+"============================================="
+def EmpresaViaje():
+    time.sleep(0.5)
+    print("Empresas registradas")
+    print(" Cedula  |  Empresa  |        Ubicación de la empresa        |   Transportes")
+    f = open ("Empresas.txt",'r') 
+    mensaje = f.read()
+    print(mensaje)
+    f.close()
+    time.sleep(2)
+    eleccion=str(input("Ingrese el nombre de una empresa: "))
+    return Transporte(eleccion) 
+"============================================="
+def Transporte(eleccion):
+    f=open("Transportes.txt", "r")
+    mensaje=f.readlines()
+    f.close()
+    return Aux(eleccion, mensaje)
+def Aux(eleccion, mensaje):
+    if mensaje==[]:
+        print("Esta empresa no tiene ningun transporte. Seleccione uno")
+        time.sleep(0.5)
+        print("Transportes registrados")
+        print(" Matrícula  |  Marca  | Modelo | Año | Nombre de la Empresa | Asientos VIP - Normales - Económicos")
+        f = open ("Transportes.txt",'r') 
+        mensaje = f.read()
+        print(mensaje)
+        f.close()
+        time.sleep(2)
+        agreg=str(input("Ingrese el número de matrícula del transporte: "))
+        return transp(eleccion, agreg)
+    if(eleccion not in mensaje[0]):
+        return Aux(eleccion, mensaje[1:])
+    else:
+        print("Esta empresa tiene vinculado el siguiente transporte: ")
+        print(mensaje[0])
+        agreg=str(input("Ingrese el número de matrícula del transporte: "))
+        return transp(eleccion, agreg)
+def transp(eleccion, agreg):
+    f = open ("Viajes.txt",'a')
+    f.write((eleccion+" | "+agreg+" | "))
+    f.close()
+    time.sleep(0.5)
+    return Montos()
+"============================================="
+def Montos():
+    print("Monto por asientos")
+    VIP=str(input("Clase VIP: "))
+    NORMAL=str(input("Clase Normal: "))
+    ECONOM=str(input("Clase Económica: "))
+    f = open ("Viajes.txt",'a')
+    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" | \n"))
+    f.close()
+    time.sleep(0.5)
+    print("El viaje ha sido agregado con éxito")
+    time.sleep(0.5)
+    return gestionViaje()
+"============================================="
+"""
+borrarViaje
+Esta función sirve para borrar un viaje del registro
+E: numero de viaje
+S: Debe borrar el viaje
+R: Ninguna
+"""
+def borrarViaje():
+    viaje=(input("Digite el número de viaje: "))
+    f = open("Viajes.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Viajes.txt","w")
+    for linea in lineas:
+        if viaje not in linea:
+            f.write(linea)
+    f.close()
+    print("Se ha eliminado el viaje")
+    time.sleep(0.5)
+    return gestionViaje()
+"=============================================="
+def modifViaje():
+    return gestionViaje()
+"=============================================="
+"""
+mostrarViaje
+Esta funcion muestra una lista con todos los viajes registrados en el sistema
+"""
+def mostrarViaje():
+    time.sleep(0.5)
+    print("Viajes registrados")
+    print("N° viaje | Ciudad salida | Fecha/hora salida | Ciudad llegada | Fecha/hora llegada | Empresa | Transporte | Montos VIP - Normales - Económicos")
+    f = open ("Viajes.txt",'r') 
+    mensaje = f.read()
+    print(mensaje)
+    f.close()
+    time.sleep(2)
+    return gestionViaje()
 #====================================================================================================================================================
 """
 historial
 Esta funcion muestra una lista de las reservaciones generadas en el sistema.
 Entradas: un menú con los siguientes filtros:
- Rango de fecha de salida, 
- Rango de fecha de llegada, 
- Rango de fecha de la reservación, 
- Lugar de salida y llegada. 
+ Rango de fecha de salida
+ Rango de fecha de llegada 
+ Rango de fecha de la reservación
+ Lugar de salida y llegada
 Salidas: Por cada reservación, debe mostrar
          Identificador
          Nombre de la persona que reserva
@@ -602,19 +807,19 @@ def info():
 consultaViaje
 Muestra una lista de los viajes.
 Entrada: un menú con los siguientes filtros: 
- Empresa, 
- Lugar de salida, 
- Lugar de llegada, 
- Rango de fecha de salida y 
+ Empresa
+ Lugar de salida
+ Lugar de llegada
+ Rango de fecha de salida
  Rango de fecha de llegada.
 Salida: Por cada viaje debe mostrar:
-         Número de viaje, 
-         Ciudad salida, 
-         Fecha y hora salida, 
-         Ciudad de llegada, 
-         Fecha y hora llegada, 
-         Empresa y transporte, 
-         Monto clase vip, monto clase normal y monto clase económica. 
+         Número de viaje
+         Ciudad salida
+         Fecha y hora salida
+         Ciudad de llegada
+         Fecha y hora llegada
+         Empresa y transporte
+         Monto clase vip, monto clase normal y monto clase económica
 """
 def consultaViaje():
     pass
