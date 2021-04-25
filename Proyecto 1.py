@@ -124,7 +124,12 @@ def entrada():
     if(op=="3"):
         return cancelReserva()
     if(op=="4"):
-        return print("Hasta luego")
+        print("Hasta luego")
+        print("")
+        print("")
+        print("")
+        time.sleep(2)
+        return print("Aplicacion()")
     else:
         print("Digite una de las opciones disponibles")
         return entrada()
@@ -194,7 +199,7 @@ def contarDigitos(num):
     else:
         return 1+contarDigitos(num//10)
 def AgregarCedula():
-    Cedula=int(input("Ingrese la cédula: "))
+    Cedula=int(input("Ingrese la cédula jurídica: "))
     if(contarDigitos(Cedula)!=10):
         print("La cédula debe tener 10 dígitos")
         return AgregarCedula()
@@ -274,8 +279,76 @@ def borrarEmpAux(ClaveBorrar):
     time.sleep(0.5)
     return gestionEmpresa()
 "========================================================================"
+"""
+modifEmp
+Esta función es capaz de modificar los campos de una empresa.
+E: La cédula jurídica de la empresa
+S: Podrá modificarse el nombre de la empresa y su ubicación
+"""
 def modifEmp():
-    pass
+    f=open("Empresas.txt", "r")
+    texto= f.read()
+    n = 0
+    for i in texto:
+        if i == "\n":
+            n+=1
+    f.close
+    
+    if (n==0):
+        print("Actualmente no hay empresas para modificar")
+        time.sleep(0.5)
+        return gestionEmpresa()
+    else:
+        return modEmp()
+"============================================="  
+def modEmp():
+    cedula=(input("Digite la cédula de la empresa a modificar: "))
+    f=open("Empresas.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    cedula=str(cedula)
+    return modAux(cedula, mensaje)
+def modAux(cedula, mensaje):
+    if mensaje==[]:
+        print("Esta empresa no existe en los registros")
+        return gestionEmpresa() 
+    if(cedula not in mensaje[0]):
+        return modAux(cedula, mensaje[1:])
+    else:
+        print("    Cedula     |    Empresa    |   Ubicación de la empresa   ")
+        print(mensaje[0])
+        time.sleep(1)
+        return modAux2(cedula)
+def modAux2(cedula):
+    f = open("Empresas.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Empresas.txt","w")
+    for linea in lineas:
+        if cedula not in linea:
+            f.write(linea)
+    f.close()
+    f = open ("Empresas.txt",'a')
+    f.write((cedula+" | "))
+    f.close()
+    return nuevoEmpresa()
+"============================================="
+def nuevoEmpresa():
+    Nombre=str(input("Nuevo nombre de empresa: "))
+    f = open ("Empresas.txt",'a')
+    f.write((Nombre+" | "))
+    f.close()
+    return nuevoUbicacion()
+"============================================="
+def nuevoUbicacion():
+    ubicac=str(input("Dirección de la empresa: "))
+    f = open ("Empresas.txt",'a')
+    f.write((ubicac+" | "))
+    f.close()
+    time.sleep(0.5)
+    print("La empresa ha sido actualizada") 
+    time.sleep(0.5)
+    return gestionEmpresa() 
 "========================================================================"
 """
 mostrarEmp
@@ -347,7 +420,7 @@ Entradas
  Marca  
  Modelo
  Año
- Empresa (una de la lista de empresas) 'Se usa como entrada el nombre de la empresa'
+ Empresa (una de la lista de empresas) 'Se usa como entrada la cedula de la empresa'
  Cantidad de asientos
         clase VIP
         clase normal
@@ -416,7 +489,7 @@ def Empresa():
     print(mensaje)
     f.close()
     time.sleep(2)
-    eleccion=str(input("Ingrese el nombre de una empresa: "))
+    eleccion=str(input("Ingrese la cédula de una empresa: "))
     f = open ("Transportes.txt",'a')
     f.write((eleccion+" | "))
     f.close()
@@ -464,7 +537,107 @@ def borrarTranspAux(Borrar):
     time.sleep(0.5)
     return gestionTransporte()
 "============================================="
+"""
+modifTransport
+Esta función es capaz de modificar los campos de un transporte.
+E: El numero de matrícula del transporte
+S: Podrá modificarse cada uno de los campos del transporte
+"""
 def modifTransport():
+    f=open("Transportes.txt", "r")
+    texto= f.read()
+    n = 0
+    for i in texto:
+        if i == "\n":
+            n+=1
+    f.close
+    
+    if (n==0):
+        print("Actualmente no hay Transportes para modificar")
+        time.sleep(0.5)
+        return gestionTransporte()
+    else:
+        return modTrp()
+"============================================="  
+def modTrp():
+    placa=(input("Digite la matrícula del transporte a modificar: "))
+    f=open("Transportes.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    placa=str(placa)
+    return modTrpAux(placa, mensaje)
+def modTrpAux(placa, mensaje):
+    if mensaje==[]:
+        print("El vehículo no aparece en los registros")
+        return gestionTransporte() 
+    if(placa not in mensaje[0]):
+        return modTrpAux(placa, mensaje[1:])
+    else:
+        print(" Matrícula  |  Marca  | Modelo | Año |  Empresa  | Asientos VIP - Normales - Económicos")
+        print(mensaje[0])
+        time.sleep(1)
+        return modTrpAux2(placa)
+def modTrpAux2(placa):
+    f = open("Transportes.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Transportes.txt","w")
+    for linea in lineas:
+        if placa not in linea:
+            f.write(linea)
+    f.close()
+    f = open ("Transportes.txt",'a')
+    f.write((placa+" | "))
+    f.close()
+    return nuevoMarca()
+"============================================="
+def nuevoMarca():
+    marca=str(input("Marca del transporte: "))
+    f = open ("Transportes.txt",'a')
+    f.write((marca+" | "))
+    f.close()
+    return nuevoModelo()
+"============================================="
+def nuevoModelo():
+    modelo=str(input("Modelo: "))
+    f = open ("Transportes.txt",'a')
+    f.write((modelo+" | "))
+    f.close()
+    return nuevoAño()
+"============================================="
+def nuevoAño():
+    year=str(input("Año: "))
+    f = open ("Transportes.txt",'a')
+    f.write((year+" | "))
+    f.close()
+    return nuevoEmpresaTrp()
+"============================================="
+def nuevoEmpresaTrp():
+    time.sleep(0.5)
+    print("Empresas registradas")
+    print(" Cedula  |  Empresa  |        Ubicación de la empresa        ")
+    f = open ("Empresas.txt",'r') 
+    mensaje = f.read()
+    print(mensaje)
+    f.close()
+    time.sleep(2)
+    eleccion=str(input("Ingrese la cédula de una empresa: "))
+    f = open ("Transportes.txt",'a')
+    f.write((eleccion+" | "))
+    f.close()
+    return nuevoAsientos()
+"============================================="
+def nuevoAsientos():
+    print("Cantidad de asientos")
+    VIP=str(input("Clase VIP: "))
+    NORMAL=str(input("Clase Normal: "))
+    ECONOM=str(input("Clase Económica: "))
+    f = open ("Transportes.txt",'a')
+    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" | \n"))
+    f.close()
+    time.sleep(0.5)
+    print("El transporte ha sido actualizado") 
+    time.sleep(0.5)
     return gestionTransporte()
 "============================================="
 def mostrarTransport():
@@ -542,6 +715,7 @@ def Revision(NumViaje, mensaje):  #Funcion para que no se repitan numeros de via
         return NumViaje()  
 "============================================="
 def ViajeNum(NumViaje):
+    print("Número de viaje: "+NumViaje)
     f = open ("Viajes.txt",'a')
     f.write((NumViaje+" | "))
     f.close()
@@ -637,7 +811,126 @@ def borrarViaje():
     time.sleep(0.5)
     return gestionViaje()
 "=============================================="
+"""
+modifViaje
+Esta función es capaz de modificar los campos de un viaje.
+E: El numero de viaje
+S: Podrá modificarse cada uno de los campos del viaje
+"""
 def modifViaje():
+    f=open("Viajes.txt", "r")
+    texto= f.read()
+    n = 0
+    for i in texto:
+        if i == "\n":
+            n+=1
+    f.close
+    if (n==0):
+        print("Actualmente no hay viajes para modificar")
+        time.sleep(0.5)
+        return gestionViaje()
+    else:
+        return modVj()
+"============================================="  
+def modVj():
+    viaje=(input("Digite la matrícula del transporte a modificar: "))
+    f=open("Viajes.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    viaje=str(viaje)
+    return modVjAux(viaje, mensaje)
+def modVjAux(viaje, mensaje):
+    if mensaje==[]:
+        print("El viaje no se encuentra registrado")
+        return gestionViaje() 
+    if(viaje not in mensaje[0]):
+        return modVjAux(viaje, mensaje[1:])
+    else:
+        print("N° viaje | Ciudad salida | Fecha/hora salida | Ciudad llegada | Fecha/hora llegada | Empresa | Transporte | Montos VIP - Normales - Económicos")
+        print(mensaje[0])
+        time.sleep(1)
+        return modVjAux2(viaje)
+def modVjAux2(viaje):
+    f = open("Viajes.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Viajes.txt","w")
+    for linea in lineas:
+        if viaje not in linea:
+            f.write(linea)
+    f.close()
+    f = open ("Viajes.txt",'a')
+    f.write((viaje+" | "))
+    f.close()
+    return nuevoSalida()
+"=============================================="
+def nuevoSalida():
+    Salida=str(input("Ciudad de salida: "))
+    FechaSalida=(input("Ingrese la fecha de salida en formato dd/mm/aaaa: "))
+    HoraSalida=(input("Ingrese la hora de salida en formato '00-24' h: "))
+    Llegada=str(input("Ciudad de llegada: "))
+    FechaLlegada=(input("Ingrese la fecha de llegada en formato dd/mm/aaaa: "))
+    HoraLlegada=(input("Ingrese la hora de llegada en formato '00-24' h: "))
+    f=open("Viajes.txt", "a")
+    f.write(Salida+" | "+FechaSalida+" "+HoraSalida+" | "+Llegada+" | "+FechaLlegada+" "+HoraLlegada+" | ")
+    f.close()
+    return NuevoEmpresaViaje()
+"============================================="
+def NuevoEmpresaViaje():
+    time.sleep(0.5)
+    print("Empresas registradas")
+    print(" Cedula  |  Empresa  |        Ubicación de la empresa        |   Transportes")
+    f = open ("Empresas.txt",'r') 
+    mensaje = f.read()
+    print(mensaje)
+    f.close()
+    time.sleep(2)
+    eleccion=str(input("Ingrese el nombre de una empresa: "))
+    return NuevoTransporte(eleccion) 
+"============================================="
+def NuevoTransporte(eleccion):
+    f=open("Transportes.txt", "r")
+    mensaje=f.readlines()
+    f.close()
+    return NuevoAux(eleccion, mensaje)
+def NuevoAux(eleccion, mensaje):
+    if mensaje==[]:
+        print("Esta empresa no tiene ningun transporte. Seleccione uno")
+        time.sleep(0.5)
+        print("Transportes registrados")
+        print(" Matrícula  |  Marca  | Modelo | Año | Nombre de la Empresa | Asientos VIP - Normales - Económicos")
+        f = open ("Transportes.txt",'r') 
+        mensaje = f.read()
+        print(mensaje)
+        f.close()
+        time.sleep(2)
+        agreg=str(input("Ingrese el número de matrícula del transporte: "))
+        return Nuevotransp(eleccion, agreg)
+    if(eleccion not in mensaje[0]):
+        return NuevoAux(eleccion, mensaje[1:])
+    else:
+        print("Esta empresa tiene vinculado el siguiente transporte: ")
+        print(mensaje[0])
+        agreg=str(input("Ingrese el número de matrícula del transporte: "))
+        return Nuevotransp(eleccion, agreg)
+def Nuevotransp(eleccion, agreg):
+    f = open ("Viajes.txt",'a')
+    f.write((eleccion+" | "+agreg+" | "))
+    f.close()
+    time.sleep(0.5)
+    return NuevoMontos()
+"============================================="
+def NuevoMontos():
+    print("Monto por asientos")
+    VIP=str(input("Clase VIP: "))
+    NORMAL=str(input("Clase Normal: "))
+    ECONOM=str(input("Clase Económica: "))
+    f = open ("Viajes.txt",'a')
+    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" | \n"))
+    f.close()
+    time.sleep(0.5)
+    print("El viaje ha sido actualizado")
+    time.sleep(0.5)
     return gestionViaje()
 "=============================================="
 """
@@ -676,7 +969,7 @@ Salidas: Por cada reservación, debe mostrar
 Restricciones: Ninguna
 """
 def historial():
-    pass
+    print("Funcion no disponible")
     return Menu()
 #====================================================================================================================================================
 """
@@ -694,7 +987,7 @@ Salidas: mostrar el siguiente detalle:
  Monto recaudado por el viaje. "
 """
 def estadisticas():
-    pass
+    print("Funcion no disponible")
     return Menu()
 #====================================================================================================================================================
 def avanzado(): #Función que sirve como menú
@@ -722,7 +1015,7 @@ Una función extra que permite al administrador cambiar la contraseña del servi
 Entrada: la contraseña actual
               la nueva contraseña
 Salida: el cambio de la contraseña
-Restricciones: La contraseña nueva no puede se r igual a la actual
+Restricciones: La contraseña nueva no puede ser igual a la actual
                       La contraseña debe tener mínimo 8 caracteres
 """
 def cambio():
@@ -822,8 +1115,49 @@ Salida: Por cada viaje debe mostrar:
          Monto clase vip, monto clase normal y monto clase económica
 """
 def consultaViaje():
-    pass
-    return usuario()
+    print("""
+Menú de filtros:
+    1- Empresa
+    2- Lugar de salida
+    3- Lugar de llegada
+    4- Rango de fecha de salida
+    5- Rango de fecha de llegada.
+    6- Volver
+""")
+    return OPCIONES()
+def OPCIONES():
+    op=str(input("Seleccione una opción: "))
+    if(op=="1"):
+        return FiltroEmpresa()
+    if(op=="2"):
+        return FiltroSalida()
+    if(op=="3"):
+        return FiltroLlegada()
+    if(op=="4"):
+        return FiltroFechaSalida()
+    if(op=="5"):
+        return FiltroFechaLlegada()
+    if(op=="6"):
+        return usuario()
+    else:
+        print("Digite una de las opciones disponibles")
+        return OPCIONES()
+    #Apartado para los filtros
+def FiltroEmpresa():
+    print("Funcion no disponible")
+    return consultaViaje()
+def FiltroSalida():
+    print("Funcion no disponible")
+    return consultaViaje()
+def FiltroLlegada():
+    print("Funcion no disponible")
+    return consultaViaje()
+def FiltroFechaSalida():
+    print("Funcion no disponible")
+    return consultaViaje()
+def FiltroFechaLlegada():
+    print("Funcion no disponible")
+    return consultaViaje()
 #====================================================================================================================================================
 """
 reserva
@@ -833,19 +1167,42 @@ Entradas:
  El nombre
  La cantidad de espacios a reservar en clase vip, normal y económica. 
 Salidas: Se le entregará un comprobante (se mostrará en pantalla, no debe exportarse ni imprimir) al cliente con:
-         Identificador de la reserva (generado automáticamente), 
-         Nombre de la persona que reserva, 
-         Fecha y hora de la reservación (capturadas del sistema), 
-         Empresa, 
-         Transporte,
-         Lugar, fecha y hora salida, lugar, fecha y hora llegada, 
-         Cantidad de asientos reservados en clase vip, clase normal y clase económica, 
-         Monto de reservación (calcular según cantidad, tipos y montos de asientos). 
-Restricciones: para la cantidad de asientos reservados en cada categoría debe haber espacios disponibles.
-                      Se deberá reservar al menos un asiento en total.
+         Identificador de la reserva (generado automáticamente)
+         Nombre de la persona que reserva
+         Fecha y hora de la reservación (capturadas del sistema)
+         Empresa 
+         Transporte
+         Lugar, fecha y hora salida, lugar, fecha y hora llegada
+         Cantidad de asientos reservados en clase vip, clase normal y clase económica
+         Monto de reservación (calcular según cantidad, tipos y montos de asientos)
+Restricciones: para la cantidad de asientos reservados en cada categoría debe haber espacios disponibles
+                      Se deberá reservar al menos un asiento en total
 """
 def reserva():
-    pass
+    print("Bienvenido(a) al sistema de reservas de BestTraveller")
+    time.sleep(0.5)
+    print("Esta es una lista de los viajes que dispone la aplicación")
+    time.sleep(0.5)
+    print("N° viaje | Ciudad salida | Fecha/hora salida | Ciudad llegada | Fecha/hora llegada | Empresa | Transporte | Montos VIP - Normales - Económicos")
+    f=open("Viajes.txt", "r")
+    mensaje=f.read()
+    print(mensaje)
+    f.close()
+    select=str(input("Seleccione uno de los viajes: "))
+    nombre=str(input("Escriba su nombre: "))
+    return cantAsientos(select, nombre)
+def cantAsientos(select, nombre):
+    VIP=int(input("Escriba la cantidad de asientos VIP a reservar (Digite 0 si no desea reservar): "))
+    NORMAL=int(input("Escriba la cantidad de asientos normales a reservar (Digite 0 si no desea reservar): "))
+    ECONOM=int(input("Escriba la cantidad de asientos económicos a reservar (Digite 0 si no desea reservar): "))
+    if((VIP+NORMAL+ECONOM)==0):
+        print("Error: debe de reservar al menos un asiento")
+        return cantAsientos(select, nombre)
+    else:
+        return factura(nombre, VIP, NORMAL, ECONOM)
+def factura(nombre, VIP, NORMAL, ECONOM):
+##    f=open("reservas.txt", "r")
+    print("funcion no disponible")
     return usuario()
 #====================================================================================================================================================
 """
@@ -855,5 +1212,17 @@ Entrada: el identificador de la reserva
 Salida: debe borrar la reservación y liberar los asientos reservados
 """
 def cancelReserva():
-    pass
+    cancel=str(input("Escriba el identificador de su reserva: "))
+##    f=open("reservas.txt", "r")
+##    mensaje = f.readlines()
+##    f.close()
+##    return cancelar(cancel, mensaje)
+##def cancelar(cancel, mensaje):
+##    if mensaje==[]:
+##        print("El viaje no se encuentra registrado")
+##        return usuario() 
+##    if(cancel not in mensaje[0]):
+##        return cancelar(cancel, mensaje[1:])
+##    else:
+    print("funcion no disponible")
     return usuario()
