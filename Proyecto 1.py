@@ -457,6 +457,9 @@ def AddMatricula(Placa):
     f = open ("Transportes.txt",'a')
     f.write((Placa+" | "))
     f.close()
+    f = open ("Asientos.txt",'a')
+    f.write((Placa+" | "))
+    f.close()
     return Marca()
 "============================================="
 def Marca():
@@ -502,6 +505,9 @@ def asientos():
     ECONOM=str(input("Clase Económica: "))
     f = open ("Transportes.txt",'a')
     f.write((VIP+" - "+NORMAL+" - "+ECONOM+" | \n"))
+    f.close()
+    f = open ("Asientos.txt",'a')
+    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" \n"))
     f.close()
     time.sleep(0.5)
     print("El transporte ha sido agregado con éxito")
@@ -635,6 +641,9 @@ def nuevoAsientos():
     f = open ("Transportes.txt",'a')
     f.write((VIP+" - "+NORMAL+" - "+ECONOM+" | \n"))
     f.close()
+    f = open ("Asientos.txt",'a')
+    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" \n"))
+    f.close()
     time.sleep(0.5)
     print("El transporte ha sido actualizado") 
     time.sleep(0.5)
@@ -717,7 +726,10 @@ def Revision(NumViaje, mensaje):  #Funcion para que no se repitan numeros de via
 def ViajeNum(NumViaje):
     print("Número de viaje: "+NumViaje)
     f = open ("Viajes.txt",'a')
-    f.write((NumViaje+" | "))
+    f.write((NumViaje+"|"))
+    f.close()
+    f = open ("Precios.txt",'a')
+    f.write((NumViaje+"|"))
     f.close()
     return Salida()
 "============================================="
@@ -729,8 +741,8 @@ def Salida():
     FechaLlegada=(input("Ingrese la fecha de llegada en formato dd/mm/aaaa: "))
     HoraLlegada=(input("Ingrese la hora de llegada en formato '00-24' h: "))
     f=open("Viajes.txt", "a")
-    f.write(Salida+" | "+FechaSalida+" "+HoraSalida+" | "+Llegada+" | "+FechaLlegada+" "+HoraLlegada+" | ")
-    f.close()
+    f.write(Salida+"|"+FechaSalida+" "+HoraSalida+"|"+Llegada+"|"+FechaLlegada+" "+HoraLlegada+"|")
+    f.close()     #Esta es la unica manera en que funciona. Si separaba y validaba cada input, el archivo no compilaba...
     return EmpresaViaje()
 "============================================="
 def EmpresaViaje():
@@ -768,11 +780,24 @@ def Aux(eleccion, mensaje):
     else:
         print("Esta empresa tiene vinculado el siguiente transporte: ")
         print(mensaje[0])
-        agreg=str(input("Ingrese el número de matrícula del transporte: "))
-        return transp(eleccion, agreg)
+        time.sleep(0.5)
+        op=str(input("¿Desea agregar este?    1-si   2-no: "))
+        if op=="1":
+            agreg=op
+            return transp(eleccion, agreg)
+        else:
+            print("Transportes registrados")
+            print(" Matrícula  |  Marca  | Modelo | Año | Nombre de la Empresa | Asientos VIP - Normales - Económicos")
+            f = open ("Transportes.txt",'r') 
+            mensaje = f.read()
+            print(mensaje)
+            f.close()
+            time.sleep(1)
+            agreg=str(input("Ingrese el número de matrícula del transporte: "))
+            return transp(eleccion, agreg)
 def transp(eleccion, agreg):
     f = open ("Viajes.txt",'a')
-    f.write((eleccion+" | "+agreg+" | "))
+    f.write((eleccion+"|"+agreg+"|"))
     f.close()
     time.sleep(0.5)
     return Montos()
@@ -783,7 +808,10 @@ def Montos():
     NORMAL=str(input("Clase Normal: "))
     ECONOM=str(input("Clase Económica: "))
     f = open ("Viajes.txt",'a')
-    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" | \n"))
+    f.write((VIP+"|"+NORMAL+"|"+ECONOM+"\n"))
+    f.close()
+    f = open ("Precios.txt",'a')
+    f.write((VIP+"|"+NORMAL+"|"+ECONOM+"\n"))
     f.close()
     time.sleep(0.5)
     print("El viaje ha sido agregado con éxito")
@@ -803,6 +831,14 @@ def borrarViaje():
     lineas = f.readlines()
     f.close()
     f = open("Viajes.txt","w")
+    for linea in lineas:
+        if viaje not in linea:
+            f.write(linea)
+    f.close()
+    f = open("Precios.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Precios.txt","w")
     for linea in lineas:
         if viaje not in linea:
             f.write(linea)
@@ -860,7 +896,18 @@ def modVjAux2(viaje):
             f.write(linea)
     f.close()
     f = open ("Viajes.txt",'a')
-    f.write((viaje+" | "))
+    f.write((viaje+"|"))
+    f.close()
+    f = open("Precios.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Precios.txt","w")
+    for linea in lineas:
+        if viaje not in linea:
+            f.write(linea)
+    f.close()
+    f = open ("Precios.txt",'a')
+    f.write((viaje+"|"))
     f.close()
     return nuevoSalida()
 "=============================================="
@@ -872,7 +919,7 @@ def nuevoSalida():
     FechaLlegada=(input("Ingrese la fecha de llegada en formato dd/mm/aaaa: "))
     HoraLlegada=(input("Ingrese la hora de llegada en formato '00-24' h: "))
     f=open("Viajes.txt", "a")
-    f.write(Salida+" | "+FechaSalida+" "+HoraSalida+" | "+Llegada+" | "+FechaLlegada+" "+HoraLlegada+" | ")
+    f.write(Salida+"|"+FechaSalida+" "+HoraSalida+"|"+Llegada+"|"+FechaLlegada+" "+HoraLlegada+"|")
     f.close()
     return NuevoEmpresaViaje()
 "============================================="
@@ -911,11 +958,24 @@ def NuevoAux(eleccion, mensaje):
     else:
         print("Esta empresa tiene vinculado el siguiente transporte: ")
         print(mensaje[0])
-        agreg=str(input("Ingrese el número de matrícula del transporte: "))
-        return Nuevotransp(eleccion, agreg)
+        time.sleep(0.5)
+        op=str(input("¿Desea agregar este?    1-si   2-no: "))
+        if op=="1":
+            agreg=op
+            return Nuevotransp(eleccion, agreg)
+        else:
+            print("Transportes registrados")
+            print(" Matrícula  |  Marca  | Modelo | Año | Nombre de la Empresa | Asientos VIP - Normales - Económicos")
+            f = open ("Transportes.txt",'r') 
+            mensaje = f.read()
+            print(mensaje)
+            f.close()
+            time.sleep(1)
+            agreg=str(input("Ingrese el número de matrícula del transporte: "))
+            return Nuevotransp(eleccion, agreg)
 def Nuevotransp(eleccion, agreg):
     f = open ("Viajes.txt",'a')
-    f.write((eleccion+" | "+agreg+" | "))
+    f.write((eleccion+"|"+agreg+"|"))
     f.close()
     time.sleep(0.5)
     return NuevoMontos()
@@ -926,7 +986,10 @@ def NuevoMontos():
     NORMAL=str(input("Clase Normal: "))
     ECONOM=str(input("Clase Económica: "))
     f = open ("Viajes.txt",'a')
-    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" | \n"))
+    f.write((VIP+"|"+NORMAL+"|"+ECONOM+"\n"))
+    f.close()
+    f = open ("Precios.txt",'a')
+    f.write((VIP+"|"+NORMAL+"|"+ECONOM+"\n"))
     f.close()
     time.sleep(0.5)
     print("El viaje ha sido actualizado")
@@ -969,8 +1032,32 @@ Salidas: Por cada reservación, debe mostrar
 Restricciones: Ninguna
 """
 def historial():
-    print("Funcion no disponible")
-    return Menu()
+    print("""
+Menú de filtros:
+ 1- Rango de fecha de salida
+ 2- Rango de fecha de llegada
+ 3- Rango de fecha de reservación
+ 4- Lugar de salida y llegada
+ 5- Volver
+""")
+    return opcionesFiltro()
+def opcionesFiltro():
+    op=int(input("Seleccione una opción: "))
+    if op==1:
+        return RangoSalida()
+    if op==2:
+        return RangoLlegada()
+    if op==3:
+        return RangoReserva()
+    if op==4:
+        salida=str(input("Escriba el lugar de salida: "))
+        Llegada=str(input("Escriba el lugar de llegada: "))
+        return FiltroLlegada(salida, Llegada)
+    if op==5:
+        return Menu()
+    else:
+        print("Digite una de las opciones disponibles")
+        return opcionesFiltro()
 #====================================================================================================================================================
 """
 estadisticas
@@ -1188,21 +1275,86 @@ def reserva():
     mensaje=f.read()
     print(mensaje)
     f.close()
-    select=str(input("Seleccione uno de los viajes: "))
+    select=str(input("Seleccione uno de los viajes (por número de viaje): "))
+    return buscarViaje(select)
+def buscarViaje(select):
+    f=open("Viajes.txt", "r")
+    mensaje=f.readlines()
+    f.close()
+    return buscarviaje(select, mensaje)
+def buscarviaje(select, mensaje):
+    if mensaje==[]:
+        print("Error: El número de viaje no existe en los registros.")
+        return usuario()
+    if(select not in mensaje[0]):
+        return buscarviaje(select, mensaje[1:])
+    else:
+        dato=list((str(mensaje[0]))[5:])
+        return sacarDato(select, dato,[" "], [])
+def sacarDato(select, dato, sub, res):
+    if dato==[]:
+        datos=res+[sub]
+        datos=unirLista(datos)
+        return continuar(select, datos)
+    if dato[0]!="|":
+        return sacarDato(select, dato[1:],sub+[dato[0]], res)
+    else:
+        return sacarDato(select, dato[1:], [], res +[sub])
+def unirLista(lista):
+    return unirobj(lista, [])
+def unirobj(lista, result):
+    if lista==[]:
+        return result
+    else:
+        obj=lista[0]
+        result+=[unir(obj)]
+        return unirobj(lista[1:], result)
+def unir(lista):
+    return unirAux(lista,"")
+def unirAux(lista, res):
+    if lista==[]:
+        return res
+    else:
+        return unirAux(lista[1:], res+lista[0])
+def continuar(select, datos):
     nombre=str(input("Escriba su nombre: "))
-    return cantAsientos(select, nombre)
-def cantAsientos(select, nombre):
-    VIP=int(input("Escriba la cantidad de asientos VIP a reservar (Digite 0 si no desea reservar): "))
-    NORMAL=int(input("Escriba la cantidad de asientos normales a reservar (Digite 0 si no desea reservar): "))
-    ECONOM=int(input("Escriba la cantidad de asientos económicos a reservar (Digite 0 si no desea reservar): "))
+    return cantAsientos(select, nombre, datos)
+def cantAsientos(select, nombre, datos):
+    VIP=int(input("Cantidad de asientos VIP a reservar (Digite 0 si no desea reservar): "))
+    NORMAL=int(input("Cantidad de asientos normales a reservar (Digite 0 si no desea reservar): "))
+    ECONOM=int(input("Cantidad de asientos económicos a reservar (Digite 0 si no desea reservar): "))
     if((VIP+NORMAL+ECONOM)==0):
         print("Error: debe de reservar al menos un asiento")
-        return cantAsientos(select, nombre)
+        return cantAsientos(select, nombre, datos)
     else:
-        return factura(nombre, VIP, NORMAL, ECONOM)
-def factura(nombre, VIP, NORMAL, ECONOM):
-##    f=open("reservas.txt", "r")
-    print("funcion no disponible")
+        return factura(select, nombre,datos, VIP, NORMAL, ECONOM)
+from datetime import datetime
+def factura(select, nombre,datos, VIP, NORMAL, ECONOM):
+    print("Generando factura")
+    time.sleep(1)
+    identif=random.randint(1000, 9999)
+    print("Comprobante de reservación ")
+    print("Reservación Nº ", identif)
+    print("Nombre del reservante: ", nombre)
+    ya=datetime.now()
+    print("Fecha y hora de reservación: ", ya)
+    print("Empresa y transporte: ", datos[4:6])
+    print("Lugar, fecha y hora salida | lugar, fecha y hora llegada")
+    print(datos[0], ", ",datos[1], " | ",datos[2], ", ",datos[3])
+    print("Cantidad de asientos reservados: " )
+    print("Clase VIP:            ", VIP)
+    print("Clase normal:        ", NORMAL)
+    print("Clase económica:  ", ECONOM)
+    print("Montos por asientos: " )
+    print("Clase VIP:            ", VIP*int(datos[6]))
+    print("Clase normal:        ", NORMAL*int(datos[7]))
+    print("Clase económica:  ", ECONOM*int(datos[8]))
+    total=(VIP*int(datos[6])+NORMAL*int(datos[7])+ECONOM*int(datos[8]))
+    print("      Monto total: ", total)
+    f=open("Reservas.txt", "a")         
+    f.write(str(identif)+"|"+nombre+"|"+str(ya)+"|"+str(datos[4])+", "+str(datos[5])+"|"+str(datos[0])+ ", "+str(datos[1])+ "|"+str(datos[2])+ ", "+str(datos[3])+"|"+str(VIP)+"|"+str(NORMAL)+"|"+str(ECONOM)+"|"+str(total))
+    time.sleep(1)
+    print("Disfrute su viaje")
     return usuario()
 #====================================================================================================================================================
 """
