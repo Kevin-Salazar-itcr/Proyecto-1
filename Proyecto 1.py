@@ -80,7 +80,7 @@ Menú
     1-  Gestión de empresas
     2-  Gestión de transporte por empresa 
     3-  Gestión de viajes
-    4-  Consultar historial de reservaciones o Estadísticas de viaje
+    4-  Consultar el historial de reservaciones
     5-  Estadísticas de viajes
     6-  Funciones avanzadas
     7-  Volver
@@ -458,7 +458,7 @@ def AddMatricula(Placa):
     f.write((Placa+" | "))
     f.close()
     f = open ("Asientos.txt",'a')
-    f.write((Placa+" | "))
+    f.write((Placa+"|"))
     f.close()
     return Marca()
 "============================================="
@@ -492,9 +492,9 @@ def Empresa():
     print(mensaje)
     f.close()
     time.sleep(2)
-    eleccion=str(input("Ingrese la cédula de una empresa: "))
+    eleccion=str(input("Ingrese el nombre de una empresa: "))
     f = open ("Transportes.txt",'a')
-    f.write((eleccion+" | "))
+    f.write(eleccion+" | ")
     f.close()
     return asientos()
 "============================================="
@@ -504,10 +504,10 @@ def asientos():
     NORMAL=str(input("Clase Normal: "))
     ECONOM=str(input("Clase Económica: "))
     f = open ("Transportes.txt",'a')
-    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" | \n"))
+    f.write(VIP+" - "+NORMAL+" - "+ECONOM+" | \n")
     f.close()
     f = open ("Asientos.txt",'a')
-    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" \n"))
+    f.write(VIP+"|"+NORMAL+"|"+ECONOM+" \n")
     f.close()
     time.sleep(0.5)
     print("El transporte ha sido agregado con éxito")
@@ -539,6 +539,15 @@ def borrarTranspAux(Borrar):
         if Borrar not in linea:
             f.write(linea)
     f.close()
+    f = open("Asientos.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Asientos.txt","w")
+    for linea in lineas:
+        if Borrar not in linea:
+            f.write(linea)
+    f.close()
+    time.sleep(0.5)
     print("El transporte ha sido eliminado")
     time.sleep(0.5)
     return gestionTransporte()
@@ -595,6 +604,17 @@ def modTrpAux2(placa):
     f = open ("Transportes.txt",'a')
     f.write((placa+" | "))
     f.close()
+    f = open("Asientos.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Asientos.txt","w")
+    for linea in lineas:
+        if placa not in linea:
+            f.write(linea)
+    f.close()
+    f = open ("Asientos.txt",'a')
+    f.write((placa+"|"))
+    f.close()
     return nuevoMarca()
 "============================================="
 def nuevoMarca():
@@ -627,7 +647,7 @@ def nuevoEmpresaTrp():
     print(mensaje)
     f.close()
     time.sleep(2)
-    eleccion=str(input("Ingrese la cédula de una empresa: "))
+    eleccion=str(input("Ingrese el nombre de una empresa: "))
     f = open ("Transportes.txt",'a')
     f.write((eleccion+" | "))
     f.close()
@@ -642,7 +662,7 @@ def nuevoAsientos():
     f.write((VIP+" - "+NORMAL+" - "+ECONOM+" | \n"))
     f.close()
     f = open ("Asientos.txt",'a')
-    f.write((VIP+" - "+NORMAL+" - "+ECONOM+" \n"))
+    f.write((VIP+"|"+NORMAL+"|"+ECONOM+" \n"))
     f.close()
     time.sleep(0.5)
     print("El transporte ha sido actualizado") 
@@ -659,7 +679,7 @@ def mostrarTransport():
     f.close()
     time.sleep(2)
     return gestionTransporte()
-         #====================Funciones de gestión de Transportes====================#
+"==========================================================="
 """
 gestionViaje
 Esta funcion permite incluir, eliminar, modificar y mostrar viajes
@@ -1044,11 +1064,14 @@ Menú de filtros:
 def opcionesFiltro():
     op=int(input("Seleccione una opción: "))
     if op==1:
-        return RangoSalida()
+        salida=str(input("Escriba una fecha:"))
+        return RangoSalida(salida)
     if op==2:
-        return RangoLlegada()
+        llegada=str(input("Escriba una fecha:"))
+        return RangoLlegada(llegada)
     if op==3:
-        return RangoReserva()
+        reserva=str(input("Escriba una fecha:"))
+        return RangoReserva(reserva)
     if op==4:
         salida=str(input("Escriba el lugar de salida: "))
         Llegada=str(input("Escriba el lugar de llegada: "))
@@ -1058,30 +1081,157 @@ def opcionesFiltro():
     else:
         print("Digite una de las opciones disponibles")
         return opcionesFiltro()
+"========================================================================="
+         #====================Funciones del historial de reservas====================#
+def RangoSalida(salida):
+    f=open("Reservas.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    return buscar1(salida, mensaje, 0)
+def buscar1(salida, mensaje, cont):
+    if mensaje==[]:
+        if cont==0:
+            print("No se encontraron coincidencias")
+            time.sleep(0.5)
+            return historial()
+        else:
+            print("Total de coincidencias: ", cont)
+            time.sleep(1)
+            return historial()
+    if(salida not in mensaje[0]):
+        return buscar1(salida, mensaje[1:], cont)
+    else:
+        print("Id reserva |   cliente  | N° viaje | Fecha/hora de reserva | Empresa, transporte | Lugar, fecha y hora salida | Lugar, fecha y hora llegada |asientos VIP| normal | económico | Monto de reserva")
+        print(mensaje[0])
+        time.sleep(1)
+        return buscar1(salida, mensaje[1:], cont+1)
+
+"=============================================================="
+def RangoLlegada(llegada):
+    f=open("Reservas.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    return buscar2(llegada, mensaje, 0)
+def buscar2(llegada, mensaje, cont):
+    if mensaje==[]:
+        if cont==0:
+            print("No se encontraron coincidencias")
+            time.sleep(0.5)
+            return historial()
+        else:
+            print("Total de coincidencias: ", cont)
+            time.sleep(1)
+            return historial()
+    if(llegada not in mensaje[0]):
+        return buscar2(llegada, mensaje[1:], cont)
+    else:
+        print("Id reserva |   cliente  | N° viaje | Fecha/hora de reserva | Empresa, transporte | Lugar, fecha y hora salida | Lugar, fecha y hora llegada |asientos VIP| normal | económico | Monto de reserva")
+        print(mensaje[0])
+        time.sleep(1)
+        return buscar2(llegada, mensaje[1:], cont+1)
+
+"=============================================================="
+def RangoReserva(reserva):
+    f=open("Reservas.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    return buscar3(reserva, mensaje, 0)
+def buscar3(reserva, mensaje, cont):
+    if mensaje==[]:
+        if cont==0:
+            print("No se encontraron coincidencias")
+            time.sleep(0.5)
+            return historial()
+        else:
+            print("Total de coincidencias: ", cont)
+            time.sleep(1)
+            return historial()
+    if(reserva not in mensaje[0]):
+        return buscar3(reserva, mensaje[1:], cont)
+    else:
+        print("Id reserva |   cliente  | N° viaje | Fecha/hora de reserva | Empresa, transporte | Lugar, fecha y hora salida | Lugar, fecha y hora llegada |asientos VIP| normal | económico | Monto de reserva")
+        print(mensaje[0])
+        time.sleep(1)
+        return buscar3(reserva, mensaje[1:], cont+1)
+
+"=============================================================="
+def FiltroLlegada(salida, Llegada):
+    f=open("Reservas.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    return buscar4(salida, Llegada, mensaje, 0)
+def buscar4(salida, Llegada, mensaje, cont):
+    if mensaje==[]:
+        if cont==0:
+            print("No se encontraron coincidencias")
+            time.sleep(0.5)
+            return historial()
+        else:
+            print("Total de coincidencias: ", cont)
+            time.sleep(1)
+            return historial()
+    if(salida not in mensaje[0]) and (Llegada not in mensaje[0]):
+        return buscar4(salida, Llegada, mensaje[1:], cont)
+    else:
+        print("Id reserva |   cliente  | N° viaje | Fecha/hora de reserva | Empresa, transporte | Lugar, fecha y hora salida | Lugar, fecha y hora llegada |asientos VIP| normal | económico | Monto de reserva")
+        print(mensaje[0])
+        time.sleep(1)
+        return buscar4(salida, Llegada, mensaje[1:], cont+1)
+
 #====================================================================================================================================================
 """
 estadisticas
 Entrada: Se debe seleccionar un viaje (se muestran al usuario los existentes)
 Salidas: mostrar el siguiente detalle: 
- Número de viaje, 
- Empresa, transporte, 
- Lugar, fecha y hora salida, 
- Lugar, fecha y hora llegada, 
- Cantidad de asientos clase vip reservados y asientos clase vip disponibles, 
- Cantidad de asientos normal reservados y asientos normal disponibles, 
- Cantidad de asientos económico reservados y asientos económico disponibles, 
- Costo por boleto vip, normal y económico, 
- Monto recaudado por el viaje. "
+ Número de viaje
+ Empresa, transporte
+ Lugar, fecha y hora salida
+ Lugar, fecha y hora llegada 
+ Cantidad de asientos clase vip reservados y asientos clase vip disponibles
+ Cantidad de asientos normal reservados y asientos normal disponibles
+ Cantidad de asientos económico reservados y asientos económico disponibles
+ Costo por boleto vip, normal y económico
+ Monto recaudado por el viaje
 """
 def estadisticas():
-    print("Funcion no disponible")
+    print("A continuación, se le mostrará una lista de viajes guardados en el sistema")
+    f=open("Viajes.txt", "r")
+    mensaje=f.readlines()
+    time.sleep(1)
+    print("N° viaje | Ciudad salida | Fecha/hora salida | Ciudad llegada | Fecha/hora llegada | Empresa | Transporte | Montos VIP - Normales - Económicos")
+    print(mensaje)
+    seleccion=str(input("Seleccione uno (por número de viaje): "))
+    return buscarInfo(seleccion)
+def buscarInfo(seleccion):
+    f=open("Reservas.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    return buscar4(salida, Llegada, mensaje, 0)
+def buscar4(salida, Llegada, mensaje, cont):
+    if mensaje==[]:
+        if cont==0:
+            print("No se encontraron coincidencias")
+            time.sleep(0.5)
+            return historial()
+        else:
+            print("Total de coincidencias: ", cont)
+            time.sleep(1)
+            return historial()
+    if(salida not in mensaje[0]) and (Llegada not in mensaje[0]):
+        return buscar4(salida, Llegada, mensaje[1:], cont)
+    else:
+        print("Id reserva |   cliente  | N° viaje | Fecha/hora de reserva | Empresa, transporte | Lugar, fecha y hora salida | Lugar, fecha y hora llegada |asientos VIP| normal | económico | Monto de reserva")
+        print(mensaje[0])
+        time.sleep(1)
+        return buscar4(salida, Llegada, mensaje[1:], cont+1)
     return Menu()
 #====================================================================================================================================================
 def avanzado(): #Función que sirve como menú
     print("""
 1-  Cambio de contraseña
 2-  Acerca de
-3-  Volver
+3-  Formatear
+4-  Volver
 """)
     return op2()
 def op2():
@@ -1091,6 +1241,8 @@ def op2():
     elif op=="2":
         return info()
     elif op=="3":
+        return Formatear()
+    elif op=="4":
         return Menu()
     else:
         print("Digite una de las opciones disponibles")
@@ -1181,6 +1333,67 @@ def info():
     time.sleep(0.5)
     return op2()
 #====================================================================================================================================================
+"""
+Formatear
+Elimina toda la base de datos
+"""
+def Formatear():
+    print("Esta opción no se puede deshacer")
+    return Format()
+def Format():
+    print("¿Está seguro que desea proceder?")
+    op=int(input("1- si   2-no: "))
+    if(op==1):
+        return permiso()
+    if(op==2):
+        return avanzado()
+    else:
+        print("Digite una de las opciones disponibles")
+        return Format()
+def permiso():
+    clave=input("Digite la contraseña: ")
+    f=open("contraseña.txt", "r")
+    contraseña=f.read()
+    f.close()
+    return permisoAux(clave, contraseña, 2)
+def permisoAux(clave, contraseña, intentos):
+    if(clave==contraseña):
+        print("Formateando")
+        f = open ("Asientos.txt",'w')
+        f.write("")
+        f.close()
+        f = open ("Empresas.txt",'w')
+        f.write("")
+        f.close()
+        f = open ("Precios.txt",'w')
+        f.write("")
+        f.close()
+        f = open ("Reservas.txt",'w')
+        f.write("")
+        f.close()
+        f = open ("TRansportes.txt",'w')
+        f.write("")
+        f.close()
+        f = open ("Viajess.txt",'w')
+        f.write("")
+        f.close()
+        time.sleep(3)
+        print("Se ha eliminado toda la base de datos del programa")
+        return avanzado()
+    else:
+        if(intentos==0):
+            print("Contraseña inválida. inténtelo de nuevo en 30 segundos")
+            time.sleep(3)
+            print("Por favor espere...")
+            time.sleep(27)
+            intentos=2
+            clave=input("Digite la contraseña: ")
+            return permisoAux(clave, contraseña, intentos)
+        else:
+            print("La contraseña es incorrecta. Quedan ", intentos, "intetos.")
+            clave=input("Digite la contraseña: ")
+            return permisoAux(clave, contraseña, intentos-1)
+#====================================================================================================================================================
                                                                                         #================Funciones dirigidas al usuario normal"====================#
 #====================================================================================================================================================
 """
@@ -1231,7 +1444,27 @@ def OPCIONES():
         return OPCIONES()
     #Apartado para los filtros
 def FiltroEmpresa():
-    print("Funcion no disponible")
+    f=open("Reservas.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    return buscar4(salida, Llegada, mensaje, 0)
+def buscar4(salida, Llegada, mensaje, cont):
+    if mensaje==[]:
+        if cont==0:
+            print("No se encontraron coincidencias")
+            time.sleep(0.5)
+            return historial()
+        else:
+            print("Total de coincidencias: ", cont)
+            time.sleep(1)
+            return historial()
+    if(salida not in mensaje[0]) and (Llegada not in mensaje[0]):
+        return buscar4(salida, Llegada, mensaje[1:], cont)
+    else:
+        print("Id reserva |   cliente  | N° viaje | Fecha/hora de reserva | Empresa, transporte | Lugar, fecha y hora salida | Lugar, fecha y hora llegada |asientos VIP| normal | económico | Monto de reserva")
+        print(mensaje[0])
+        time.sleep(1)
+        return buscar4(salida, Llegada, mensaje[1:], cont+1)
     return consultaViaje()
 def FiltroSalida():
     print("Funcion no disponible")
@@ -1289,7 +1522,7 @@ def buscarviaje(select, mensaje):
     if(select not in mensaje[0]):
         return buscarviaje(select, mensaje[1:])
     else:
-        dato=list((str(mensaje[0]))[5:])
+        dato=list((str(mensaje[0]))[0:])
         return sacarDato(select, dato,[" "], [])
 def sacarDato(select, dato, sub, res):
     if dato==[]:
@@ -1327,7 +1560,65 @@ def cantAsientos(select, nombre, datos):
         print("Error: debe de reservar al menos un asiento")
         return cantAsientos(select, nombre, datos)
     else:
-        return factura(select, nombre,datos, VIP, NORMAL, ECONOM)
+        return revisarAsientos(select, nombre,datos, datos[6], VIP, NORMAL, ECONOM)
+def revisarAsientos(select, nombre,datos, Transporte, VIP, NORMAL, ECONOM):
+    f=open("Asientos.txt", "r")
+    asientos=f.readlines()
+    f.close()
+    return revisarAux(select, nombre,datos, Transporte, asientos, VIP, NORMAL, ECONOM)
+def revisarAux(select, nombre,datos, Transporte, asientos, VIP, NORMAL, ECONOM):
+    if asientos==[]:
+        print("Hubo un error inesperado.")
+        return usuario()
+    if(Transporte not in asientos[0]):
+        return revisarAux(select, nombre,datos, Transporte, asientos[1:], VIP, NORMAL, ECONOM)
+    else:
+        asiento=(list(str(asientos[0])))[0:-2]
+        return acomodar(select, nombre,datos, asiento, VIP, NORMAL, ECONOM, [" "], [])
+def acomodar(select, nombre,datos, asiento, VIP, NORMAL, ECONOM, sub, res):
+    if asiento==[]:
+        asientos=res+[sub]
+        asientos=unirLista(asientos)
+        print(asientos)
+        return confirmarAsientos(select, nombre,datos, asientos, VIP, NORMAL, ECONOM)
+    if asiento[0]!="|":
+        return acomodar(select, nombre,datos, asiento[1:], VIP, NORMAL, ECONOM, sub+[asiento[0]], res)
+    else:
+        return acomodar(select, nombre,datos, asiento[1:], VIP, NORMAL, ECONOM, [], res +[sub])
+def confirmarAsientos(select, nombre,datos, asientos, VIP, NORMAL, ECONOM):
+    vip=int(asientos[1])
+    normal=int(asientos[2])
+    econom=int(asientos[3])
+    if(VIP>=vip):
+        print("Error: sólo hay"+" "+asientos[1]+" asientos disponible(s) en clase VIP")
+        return usuario()
+    if(NORMAL>=normal):
+        print("Error: sólo hay"+" "+asientos[2]+" asientos disponible(s) en clase Normal")
+        return usuario()
+    if int(ECONOM>=econom):
+        print("Error: sólo hay"+" "+asientos[3]+" asientos disponible(s) en clase Económica")
+        return usuario()
+    else:
+        return reservarAsientos(select, nombre,datos, asientos, VIP, NORMAL, ECONOM)
+def reservarAsientos(select, nombre,datos, asientos, VIP, NORMAL, ECONOM):
+    f=open("Asientos.txt", "r")
+    lineas=f.readlines()
+    f.close()
+    Trp=str(asientos[0])
+    Trp=Trp[1:]
+    f=open("Asientos.txt", "w")
+    for linea in lineas:
+        if Trp not in linea:
+            f.write(linea)
+        f.close()
+    VIPdisp= int(asientos[1])-int(VIP)
+    NMLdisp= int(asientos[2])-int(NORMAL)
+    ECNdisp= int(asientos[3])-int(ECONOM)
+    f=open("Asientos.txt", "a")
+    f.write(str(asientos[0])+"|"+str(VIPdisp)+"|"+str(NMLdisp)+"|"+str(ECNdisp))
+    f.close()
+    return factura(select, nombre,datos, VIP, NORMAL, ECONOM)
+
 from datetime import datetime
 def factura(select, nombre,datos, VIP, NORMAL, ECONOM):
     print("Generando factura")
@@ -1338,21 +1629,21 @@ def factura(select, nombre,datos, VIP, NORMAL, ECONOM):
     print("Nombre del reservante: ", nombre)
     ya=datetime.now()
     print("Fecha y hora de reservación: ", ya)
-    print("Empresa y transporte: ", datos[4:6])
+    print("Empresa y transporte: ", datos[5:7])
     print("Lugar, fecha y hora salida | lugar, fecha y hora llegada")
-    print(datos[0], ", ",datos[1], " | ",datos[2], ", ",datos[3])
+    print(datos[1], ", ",datos[2], " | ",datos[3], ", ",datos[4])
     print("Cantidad de asientos reservados: " )
     print("Clase VIP:            ", VIP)
     print("Clase normal:        ", NORMAL)
     print("Clase económica:  ", ECONOM)
     print("Montos por asientos: " )
-    print("Clase VIP:            ", VIP*int(datos[6]))
-    print("Clase normal:        ", NORMAL*int(datos[7]))
-    print("Clase económica:  ", ECONOM*int(datos[8]))
-    total=(VIP*int(datos[6])+NORMAL*int(datos[7])+ECONOM*int(datos[8]))
+    print("Clase VIP:            ", VIP*int(datos[7]))
+    print("Clase normal:        ", NORMAL*int(datos[8]))
+    print("Clase económica:  ", ECONOM*int(datos[9]))
+    total=(VIP*int(datos[7])+NORMAL*int(datos[8])+ECONOM*int(datos[9]))
     print("      Monto total: ", total)
     f=open("Reservas.txt", "a")         
-    f.write(str(identif)+"|"+nombre+"|"+str(ya)+"|"+str(datos[4])+", "+str(datos[5])+"|"+str(datos[0])+ ", "+str(datos[1])+ "|"+str(datos[2])+ ", "+str(datos[3])+"|"+str(VIP)+"|"+str(NORMAL)+"|"+str(ECONOM)+"|"+str(total))
+    f.write(str(identif)+"|"+nombre+"|"+str(datos[0])+"|"+str(ya)+"|"+str(datos[5])+", "+str(datos[6])+"|"+str(datos[1])+ ", "+str(datos[2])+ "|"+str(datos[3])+ ", "+str(datos[4])+"|"+str(VIP)+"|"+str(NORMAL)+"|"+str(ECONOM)+"|"+str(total)+"\n")
     time.sleep(1)
     print("Disfrute su viaje")
     return usuario()
