@@ -867,7 +867,7 @@ def modifViaje():
         return modVj()
 "============================================="  
 def modVj():
-    viaje=(input("Digite la matrícula del transporte a modificar: "))
+    viaje=(input("Digite el número de viaje: "))
     f=open("Viajes.txt",'r')
     mensaje = f.readlines()
     f.close()
@@ -1225,18 +1225,31 @@ def MasDatos(asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada
     f.close()
     return buscarCoincidencias(mensaje, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
 def buscarCoincidencias(mensaje, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp):
-    return Coincidencias(mensaje, 0, [], asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
-def Coincidencias(mensaje, i, res, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp):
+    return Coincidencias_(mensaje, 0, [], asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
+def Coincidencias_(mensaje, i, res, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp):
     if mensaje==[]:
         if i==0:
-            return print("No se encontraron coincidencias")
+            print("Número de viaje: "+seleccion)
+            print("Empresa, transporte: "+Emp+", "+Trp)
+            print("Lugar, fecha y hora salida: "+Lug_Salida+", "+FH_Salida)
+            print("Lugar, fecha y hora llegada: "+Lug_Llegada+", "+FH_Llegada)
+            print("Asientos VIP reservados | Asientos VIP disponibles: 0 | "+vipDisp)
+            print("Asientos Normales reservados | Asientos Normales disponibles: 0 | "+normalDisp)
+            print("Asientos Económicos reservados | Asientos Económicos disponibles: 0 | "+economDisp)
+            print("Costo por boleto: ")
+            print("VIP: "+MontoVIP)
+            print("Normal: "+MontoNml)
+            print("Económico: "+MontoEcm)
+            print("Monto recaudado por el viaje: 0")
+            time.sleep(2)
+            return Menu()
         else:
             DatosReserva=res
             return seguir(DatosReserva, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
     if(Trp not in mensaje[0]):
-        return Coincidencias(mensaje[1:], i, res, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
+        return Coincidencias_(mensaje[1:], i, res, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
     else:
-        return Coincidencias(mensaje[1:], i+1, res+[mensaje[0]], asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
+        return Coincidencias_(mensaje[1:], i+1, res+[mensaje[0]], asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
 def seguir(DatosReserva, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp):
     Datos=comprimirLista(DatosReserva)
     datos1= Datos
@@ -1433,10 +1446,12 @@ def info():
     print("""
          BestTraveller-Gestor de Viajes
                       Versión 1.0
-             @2020-2021 Kuzu Prod.
 
-                       Creador:
+                         Creador:
           KEVIN SALAZAR VALLES
+          
+             @2020-2021 Kuzu Prod.
+         Todos los derechos reservados.
 """)
     time.sleep(0.5)
     return op2()
@@ -1479,10 +1494,10 @@ def permisoAux(clave, contraseña, intentos):
         f = open ("Reservas.txt",'w')
         f.write("")
         f.close()
-        f = open ("TRansportes.txt",'w')
+        f = open ("Transportes.txt",'w')
         f.write("")
         f.close()
-        f = open ("Viajess.txt",'w')
+        f = open ("Viajes.txt",'w')
         f.write("")
         f.close()
         time.sleep(3)
@@ -1757,21 +1772,20 @@ def revisarAsientos(select, nombre,datos, Transporte, VIP, NORMAL, ECONOM):
     f=open("Asientos.txt", "r")
     asientos=f.readlines()
     f.close()
-    return revisarAux(select, nombre,datos, Transporte, asientos, VIP, NORMAL, ECONOM)
-def revisarAux(select, nombre,datos, Transporte, asientos, VIP, NORMAL, ECONOM):
+    return revisarAux2(select, nombre,datos, Transporte, asientos, VIP, NORMAL, ECONOM)
+def revisarAux2(select, nombre,datos, Transporte, asientos, VIP, NORMAL, ECONOM):
     if asientos==[]:
         print("Hubo un error inesperado.")
         return usuario()
     if(Transporte not in asientos[0]):
-        return revisarAux(select, nombre,datos, Transporte, asientos[1:], VIP, NORMAL, ECONOM)
+        return revisarAux2(select, nombre,datos, Transporte, asientos[1:], VIP, NORMAL, ECONOM)
     else:
-        asiento=(list(str(asientos[0])))[0:-2]
+        asiento=(list(str(asientos[0])))[0:-1]
         return acomodar(select, nombre,datos, asiento, VIP, NORMAL, ECONOM, [" "], [])
 def acomodar(select, nombre,datos, asiento, VIP, NORMAL, ECONOM, sub, res):
     if asiento==[]:
         asientos=res+[sub]
         asientos=unirLista(asientos)
-        print(asientos)
         return confirmarAsientos(select, nombre,datos, asientos, VIP, NORMAL, ECONOM)
     if asiento[0]!="|":
         return acomodar(select, nombre,datos, asiento[1:], VIP, NORMAL, ECONOM, sub+[asiento[0]], res)
@@ -1781,13 +1795,13 @@ def confirmarAsientos(select, nombre,datos, asientos, VIP, NORMAL, ECONOM):
     vip=int(asientos[1])
     normal=int(asientos[2])
     econom=int(asientos[3])
-    if(VIP>=vip):
+    if(VIP>vip):
         print("Error: sólo hay"+" "+asientos[1]+" asientos disponible(s) en clase VIP")
         return usuario()
-    if(NORMAL>=normal):
+    if(NORMAL>normal):
         print("Error: sólo hay"+" "+asientos[2]+" asientos disponible(s) en clase Normal")
         return usuario()
-    if int(ECONOM>=econom):
+    if int(ECONOM>econom):
         print("Error: sólo hay"+" "+asientos[3]+" asientos disponible(s) en clase Económica")
         return usuario()
     else:
@@ -1807,7 +1821,7 @@ def reservarAsientos(select, nombre,datos, asientos, VIP, NORMAL, ECONOM):
     NMLdisp= int(asientos[2])-int(NORMAL)
     ECNdisp= int(asientos[3])-int(ECONOM)
     f=open("Asientos.txt", "a")
-    f.write(str(asientos[0])+"|"+str(VIPdisp)+"|"+str(NMLdisp)+"|"+str(ECNdisp))
+    f.write(str(asientos[0])+"|"+str(VIPdisp)+"|"+str(NMLdisp)+"|"+str(ECNdisp)+"\n")
     f.close()
     return factura(select, nombre,datos, VIP, NORMAL, ECONOM)
 
@@ -1834,7 +1848,7 @@ def factura(select, nombre,datos, VIP, NORMAL, ECONOM):
     print("Clase económica:  ", ECONOM*int(datos[9]))
     total=(VIP*int(datos[7])+NORMAL*int(datos[8])+ECONOM*int(datos[9]))
     print("      Monto total: ", total)
-    f=open("Reservas.txt", "a")         
+    f=open("Reservas.txt", "a")
     f.write(str(identif)+"|"+nombre+"|"+str(datos[0])+"|"+str(ya)+"|"+str(datos[5])+", "+str(datos[6])+"|"+str(datos[1])+ ", "+str(datos[2])+ "|"+str(datos[3])+ ", "+str(datos[4])+"|"+str(VIP)+"|"+str(NORMAL)+"|"+str(ECONOM)+"|"+str(total)+"\n")
     time.sleep(1)
     print("Disfrute su viaje")
@@ -1848,16 +1862,93 @@ Salida: debe borrar la reservación y liberar los asientos reservados
 """
 def cancelReserva():
     cancel=str(input("Escriba el identificador de su reserva: "))
-##    f=open("reservas.txt", "r")
-##    mensaje = f.readlines()
-##    f.close()
-##    return cancelar(cancel, mensaje)
-##def cancelar(cancel, mensaje):
-##    if mensaje==[]:
-##        print("El viaje no se encuentra registrado")
-##        return usuario() 
-##    if(cancel not in mensaje[0]):
-##        return cancelar(cancel, mensaje[1:])
-##    else:
-    print("funcion no disponible")
+    f=open("Reservas.txt", "r")
+    mensaje = f.readlines()
+    f.close()
+    return cancelar(cancel, mensaje)
+def cancelar(cancel, mensaje):
+    if mensaje==[]:
+        print("El dato no se encuentra registrado")
+        return usuario() 
+    if(cancel not in mensaje[0]):
+        return cancelar(cancel, mensaje[1:])
+    else:
+        dato=(list(str(mensaje[0])))[0:-1]
+        return cancelarAux(cancel, dato, [" "], [])
+def cancelarAux(cancel, dato, sub, res):
+    if dato==[]:
+        reserva=res+[sub]
+        reserva=unirLista(reserva)
+        vip_=reserva[7]
+        normal_=reserva[8]
+        econom_=reserva[9]
+        Matricula=quitarCaracter(list(str(reserva[4])))
+        Placa=Matricula[1]
+        return AsientosReservados(cancel, vip_, normal_, econom_, Placa)
+    if dato[0]!="|":
+        return cancelarAux(cancel, dato[1:], sub+[dato[0]], res)
+    else:
+        return cancelarAux(cancel, dato[1:], [], res +[sub])
+def quitarCaracter(lista):
+    return quitarAux(lista, [], [])
+def quitarAux(lista, sub, res):
+    if lista==[]:
+        datos=res+[sub]
+        datos=unirLista(datos)
+        return datos
+    if lista[0]!=",":
+        return quitarAux(lista[1:], sub+[lista[0]], res)
+    if lista[0]!=",":
+        return quitarAux(lista[1:], sub+[lista[0]], res)   
+    else:
+        return quitarAux(lista[1:], [], res+[sub])
+def AsientosReservados(cancel, vip_, normal_, econom_, Placa):
+    f=open("Asientos.txt", "r")
+    mensaje = f.readlines()
+    f.close()
+    return SacarAsientosReservados(cancel, vip_, normal_, econom_, Placa, mensaje)
+def SacarAsientosReservados(cancel, vip_, normal_, econom_, Placa, mensaje):
+    if mensaje==[]:
+        print("Hubo un error inesperado")
+        return usuario() 
+    if(Placa not in mensaje[0]):
+        return SacarAsientosReservados(cancel, vip_, normal_, econom_, Placa, mensaje[1:])
+    else:
+        dato=(list(str(mensaje[0])))[:-1]
+        return cancelarAux2(cancel, vip_, normal_, econom_, Placa, dato, [" "], [])
+def cancelarAux2(cancel, vip_, normal_, econom_, Placa, dato, sub, res):
+    if dato==[]:
+        asientos=res+[sub]
+        asientos=unirLista(asientos)
+        vipD=int(asientos[1])+int(vip_)
+        normalD=int(asientos[2])+int(normal_)
+        economD=int(asientos[3])+int(econom_)
+        return BorrarReserva(cancel, Placa, vipD, normalD, economD)
+    if dato[0]!="|":
+        return cancelarAux2(cancel, vip_, normal_, econom_, Placa, dato[1:], sub+[dato[0]], res)
+    else:
+        return cancelarAux2(cancel, vip_, normal_, econom_, Placa, dato[1:], [], res +[sub])
+def BorrarReserva(cancel, Placa, vipD, normalD, economD):
+    f = open("Reservas.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Reservas.txt","w")
+    for linea in lineas:
+        if cancel not in linea:
+            f.write(linea)
+    f.close()
+    f = open("Asientos.txt","r")
+    lineas = f.readlines()
+    f.close()
+    f = open("Asientos.txt","w")
+    for linea in lineas:
+        if Placa not in linea:
+            f.write(linea)
+    f.close()
+    f = open("Asientos.txt","a")
+    f.write(Placa+"|"+str(vipD)+"|"+str(normalD)+"|"+str(economD)+"\n")
+    f.close()
+    time.sleep(0.5)
+    print("Su reserva ha sido eliminada del sistema.")
+    time.sleep(0.5)
     return usuario()
