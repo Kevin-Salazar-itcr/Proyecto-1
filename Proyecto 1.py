@@ -783,38 +783,16 @@ def Transporte(eleccion):
     f.close()
     return Aux(eleccion, mensaje)
 def Aux(eleccion, mensaje):
-    if mensaje==[]:
-        print("Esta empresa no tiene ningun transporte. Seleccione uno")
-        time.sleep(0.5)
-        print("Transportes registrados")
-        print(" Matrícula  |  Marca  | Modelo | Año | Nombre de la Empresa | Asientos VIP - Normales - Económicos")
-        f = open ("Transportes.txt",'r') 
-        mensaje = f.read()
-        print(mensaje)
-        f.close()
-        time.sleep(2)
-        agreg=str(input("Ingrese el número de matrícula del transporte: "))
-        return transp(eleccion, agreg)
-    if(eleccion not in mensaje[0]):
-        return Aux(eleccion, mensaje[1:])
-    else:
-        print("Esta empresa tiene vinculado el siguiente transporte: ")
-        print(mensaje[0])
-        time.sleep(0.5)
-        op=str(input("¿Desea agregar este?    1-si   2-no: "))
-        if op=="1":
-            agreg=op
-            return transp(eleccion, agreg)
-        else:
-            print("Transportes registrados")
-            print(" Matrícula  |  Marca  | Modelo | Año | Nombre de la Empresa | Asientos VIP - Normales - Económicos")
-            f = open ("Transportes.txt",'r') 
-            mensaje = f.read()
-            print(mensaje)
-            f.close()
-            time.sleep(1)
-            agreg=str(input("Ingrese el número de matrícula del transporte: "))
-            return transp(eleccion, agreg)
+    time.sleep(0.5)
+    print("Transportes registrados")
+    print(" Matrícula  |  Marca  | Modelo | Año | Nombre de la Empresa | Asientos VIP - Normales - Económicos")
+    f = open ("Transportes.txt",'r') 
+    mensaje = f.read()
+    print(mensaje)
+    f.close()
+    time.sleep(2)
+    agreg=str(input("Ingrese el número de matrícula del transporte: "))
+    return transp(eleccion, agreg)
 def transp(eleccion, agreg):
     f = open ("Viajes.txt",'a')
     f.write((eleccion+"|"+agreg+"|"))
@@ -961,38 +939,17 @@ def NuevoTransporte(eleccion):
     f.close()
     return NuevoAux(eleccion, mensaje)
 def NuevoAux(eleccion, mensaje):
-    if mensaje==[]:
-        print("Esta empresa no tiene ningun transporte. Seleccione uno")
-        time.sleep(0.5)
-        print("Transportes registrados")
-        print(" Matrícula  |  Marca  | Modelo | Año | Nombre de la Empresa | Asientos VIP - Normales - Económicos")
-        f = open ("Transportes.txt",'r') 
-        mensaje = f.read()
-        print(mensaje)
-        f.close()
-        time.sleep(2)
-        agreg=str(input("Ingrese el número de matrícula del transporte: "))
-        return Nuevotransp(eleccion, agreg)
-    if(eleccion not in mensaje[0]):
-        return NuevoAux(eleccion, mensaje[1:])
-    else:
-        print("Esta empresa tiene vinculado el siguiente transporte: ")
-        print(mensaje[0])
-        time.sleep(0.5)
-        op=str(input("¿Desea agregar este?    1-si   2-no: "))
-        if op=="1":
-            agreg=op
-            return Nuevotransp(eleccion, agreg)
-        else:
-            print("Transportes registrados")
-            print(" Matrícula  |  Marca  | Modelo | Año | Nombre de la Empresa | Asientos VIP - Normales - Económicos")
-            f = open ("Transportes.txt",'r') 
-            mensaje = f.read()
-            print(mensaje)
-            f.close()
-            time.sleep(1)
-            agreg=str(input("Ingrese el número de matrícula del transporte: "))
-            return Nuevotransp(eleccion, agreg)
+    time.sleep(0.5)
+    print("Transportes registrados")
+    print(" Matrícula  |  Marca  | Modelo | Año | Nombre de la Empresa | Asientos VIP - Normales - Económicos")
+    f = open ("Transportes.txt",'r') 
+    mensaje = f.read()
+    print(mensaje)
+    f.close()
+    time.sleep(2)
+    agreg=str(input("Ingrese el número de matrícula del transporte: "))
+    return Nuevotransp(eleccion, agreg)
+
 def Nuevotransp(eleccion, agreg):
     f = open ("Viajes.txt",'a')
     f.write((eleccion+"|"+agreg+"|"))
@@ -1196,35 +1153,186 @@ Salidas: mostrar el siguiente detalle:
 def estadisticas():
     print("A continuación, se le mostrará una lista de viajes guardados en el sistema")
     f=open("Viajes.txt", "r")
-    mensaje=f.readlines()
+    mensaje=f.read()
     time.sleep(1)
     print("N° viaje | Ciudad salida | Fecha/hora salida | Ciudad llegada | Fecha/hora llegada | Empresa | Transporte | Montos VIP - Normales - Económicos")
     print(mensaje)
     seleccion=str(input("Seleccione uno (por número de viaje): "))
     return buscarInfo(seleccion)
 def buscarInfo(seleccion):
-    f=open("Reservas.txt",'r')
+    f=open("Viajes.txt",'r')
     mensaje = f.readlines()
     f.close()
-    return buscar4(salida, Llegada, mensaje, 0)
-def buscar4(salida, Llegada, mensaje, cont):
+    return EstadistViaje(seleccion, mensaje)
+def EstadistViaje(seleccion, mensaje):
     if mensaje==[]:
-        if cont==0:
-            print("No se encontraron coincidencias")
-            time.sleep(0.5)
-            return historial()
-        else:
-            print("Total de coincidencias: ", cont)
-            time.sleep(1)
-            return historial()
-    if(salida not in mensaje[0]) and (Llegada not in mensaje[0]):
-        return buscar4(salida, Llegada, mensaje[1:], cont)
+        print("Hubo un error. No se encontraron coincidencias")
+        time.sleep(0.5)
+        return Menu()
+    if(seleccion not in mensaje[0]):
+        return EstadistViaje(seleccion, mensaje[1:])
     else:
-        print("Id reserva |   cliente  | N° viaje | Fecha/hora de reserva | Empresa, transporte | Lugar, fecha y hora salida | Lugar, fecha y hora llegada |asientos VIP| normal | económico | Monto de reserva")
-        print(mensaje[0])
-        time.sleep(1)
-        return buscar4(salida, Llegada, mensaje[1:], cont+1)
+        dato=list(str(mensaje[0]))
+        return DatosViaje(seleccion, dato, [" "], [])
+def DatosViaje(seleccion, dato, sub, res):
+    if dato==[]:
+        datos=res+[sub]
+        datos=unirLista(datos)
+        return seleccionar(seleccion, datos)
+    if dato[0]!="|":
+        return DatosViaje(seleccion, dato[1:],sub+[dato[0]], res)
+    else:
+        return DatosViaje(seleccion, dato[1:], [], res +[sub])
+def seleccionar(seleccion, datos):
+    Lug_Salida=datos[1]
+    FH_Salida=datos[2]
+    Lug_Llegada=datos[3]
+    FH_Llegada=datos[4]
+    Emp=datos[5]
+    Trp=datos[6]
+    MontoVIP=datos[7]
+    MontoNml=datos[8]
+    MontoEcm=datos[9]
+    f=open("Asientos.txt", "r")
+    asientos=f.readlines()
+    f.close()
+    return Select_Asientos(asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm)
+def Select_Asientos(asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm):
+    if asientos==[]:
+        print("Hubo un error inesperado.")
+        return Menu()
+    if(Trp not in asientos[0]):  
+        return (asientos[1:], seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm)
+    else:
+        asiento=(list(str(asientos[0])))
+        return Select_Aux(asiento, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, [" "], [])
+def Select_Aux(asiento, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, sub, res):
+    if asiento==[]:
+        asientos=res+[sub]
+        asientos=unirLista(asientos)
+        vipDisp=(asientos[1])
+        normalDisp=(asientos[2])
+        economDisp=(asientos[3])
+        return MasDatos(asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
+    if asiento[0]!="|":
+        return Select_Aux(asiento[1:], seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, sub+[asiento[0]], res)
+    else:
+        return Select_Aux(asiento[1:], seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, [], res +[sub])
+"==============================================="
+def MasDatos(asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp):
+    f=open("Reservas.txt", "r")
+    mensaje=f.readlines()
+    f.close()
+    return buscarCoincidencias(mensaje, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
+def buscarCoincidencias(mensaje, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp):
+    return Coincidencias(mensaje, 0, [], asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
+def Coincidencias(mensaje, i, res, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp):
+    if mensaje==[]:
+        if i==0:
+            return print("No se encontraron coincidencias")
+        else:
+            DatosReserva=res
+            return seguir(DatosReserva, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
+    if(Trp not in mensaje[0]):
+        return Coincidencias(mensaje[1:], i, res, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
+    else:
+        return Coincidencias(mensaje[1:], i+1, res+[mensaje[0]], asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp)
+def seguir(DatosReserva, asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp):
+    Datos=comprimirLista(DatosReserva)
+    datos1= Datos
+    datos2= Datos
+    datos3= Datos
+    datos4= Datos
+    vipRes=relacionarAsientVIP(datos1)
+    normalRes=relacionarAsientNormal(datos2)
+    economRes=relacionarAsientEconom(datos3)
+    Total=relacionarMontos(datos4)
+    return Estadist_Final(seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp, vipRes, normalRes, economRes, Total)
+def Estadist_Final(seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, vipDisp, normalDisp, economDisp, vipRes, normalRes, economRes, Total):
+    print("Número de viaje: "+seleccion)
+    print("Empresa, transporte: "+Emp+", "+Trp)
+    print("Lugar, fecha y hora salida: "+Lug_Salida+", "+FH_Salida)
+    print("Lugar, fecha y hora llegada: "+Lug_Llegada+", "+FH_Llegada)
+    print("Asientos VIP reservados | Asientos VIP disponibles: "+vipRes+" | "+vipDisp)
+    print("Asientos Normales reservados | Asientos Normales disponibles: "+normalRes+" | "+normalDisp)
+    print("Asientos Económicos reservados | Asientos Económicos disponibles: "+economRes+" | "+economDisp)
+    print("Costo por boleto: ")
+    print("VIP: "+MontoVIP)
+    print("Normal: "+MontoNml)
+    print("Económico: "+MontoEcm)
+    print("Monto recaudado por el viaje: "+Total)
+    time.sleep(2)
     return Menu()
+"==============================================="
+"""
+comprimirLista
+Dada una lista con sublistas que contienen un texto, se descompone cada texto de sublista en palabras
+(esto para seleccionar datos específicos)
+"""
+def comprimirLista(lista):
+    if lista==[]:
+        return "La lista está vacía"
+    else:
+        return comprimir1(lista, [])
+def comprimir1(lista, RES):
+    if lista==[]:
+        return RES
+    else:
+        obj=(list(str(lista[0])))
+        return comprimirObjeto(lista, obj, [" "], [], RES)
+def comprimirObjeto(lista, obj, sub, res, RES):
+    if obj==[]:
+        datos=res+[sub]
+        datos=unirLista(datos) 
+        return comprimir1(lista[1:], RES+[datos])
+    if obj[0]!="|":
+        return comprimirObjeto(lista, obj[1:],sub+[obj[0]], res, RES)
+    else:
+        return comprimirObjeto(lista, obj[1:], [], res +[sub], RES)
+"=================================="
+def relacionarAsientVIP(datos):
+    return relacionarVIP(datos, 0)
+def relacionarVIP(datos, info):
+    if datos==[]:
+        return str(info)
+    else:
+        return relacVIP(datos, datos[0], 0, info)
+def relacVIP(datos, dato, res1, info):
+    res1+=int(dato[7])
+    return relacionarVIP(datos[1:], info+res1)
+"=================================="    
+def relacionarAsientNormal(datos):
+    return relacionarNormal(datos, 0)
+def relacionarNormal(datos, info2):
+    if datos==[]:
+        return str(info2)
+    else:
+        return relacNormal(datos, datos[0], 0, info2)
+def relacNormal(datos, dato, res2, info2):
+    res2+=int(dato[8])
+    return relacionarNormal(datos[1:], info2+res2)
+"=================================="
+def relacionarAsientEconom(datos):
+    return relacionarEconom(datos, 0)
+def relacionarEconom(datos, info3):
+    if datos==[]:
+        return str(info3)
+    else:
+        return relacEconom(datos, datos[0], 0, info3)
+def relacEconom(datos, dato, res3, info3):
+    res3+=int(dato[9])
+    return relacionarEconom(datos[1:], info3+res3)
+"=================================="
+def relacionarMontos(datos):
+    return MontoFinal(datos, 0)
+def MontoFinal(datos, info4):
+    if datos==[]:
+        return str(info4)
+    else:
+        return MontoFinalAux(datos, datos[0], 0, info4)
+def MontoFinalAux(datos, dato, res4, info4):
+    res4+=int(dato[10])
+    return MontoFinal(datos[1:], info4+res4)
 #====================================================================================================================================================
 def avanzado(): #Función que sirve como menú
     print("""
@@ -1428,56 +1536,140 @@ Menú de filtros:
 def OPCIONES():
     op=str(input("Seleccione una opción: "))
     if(op=="1"):
-        return FiltroEmpresa()
+        Dato=str(input("Nombre de la empresa: "))
+        return FiltroEmpresaViaje(Dato)
     if(op=="2"):
-        return FiltroSalida()
+        Dato=str(input("Lugar de salida: "))
+        return FiltroSalidaViaje(Dato)
     if(op=="3"):
-        return FiltroLlegada()
+        Dato=str(input("Lugar de llegada: "))
+        return FiltroLlegadaViaje(Dato)
     if(op=="4"):
-        return FiltroFechaSalida()
+        Dato=str(input("Fecha de salida: "))
+        return FiltroFechaSalidaViaje(Dato)
     if(op=="5"):
-        return FiltroFechaLlegada()
+        Dato=str(input("Fecha de Llegada: "))
+        return FiltroFechaLlegadaViaje(Dato)
     if(op=="6"):
         return usuario()
     else:
         print("Digite una de las opciones disponibles")
         return OPCIONES()
     #Apartado para los filtros
-def FiltroEmpresa():
-    f=open("Reservas.txt",'r')
+def FiltroEmpresaViaje(Dato):
+    f=open("Viajes.txt",'r')
     mensaje = f.readlines()
     f.close()
-    return buscar4(salida, Llegada, mensaje, 0)
-def buscar4(salida, Llegada, mensaje, cont):
+    return FiltroEmpresaViajeAux(Dato, mensaje, 0)
+def FiltroEmpresaViajeAux(Dato, mensaje, i):
     if mensaje==[]:
-        if cont==0:
+        if i==0:
             print("No se encontraron coincidencias")
             time.sleep(0.5)
-            return historial()
+            return consultaViaje()
         else:
-            print("Total de coincidencias: ", cont)
+            print("Total de coincidencias: ", i)
             time.sleep(1)
-            return historial()
-    if(salida not in mensaje[0]) and (Llegada not in mensaje[0]):
-        return buscar4(salida, Llegada, mensaje[1:], cont)
+            return consultaViaje()
+    if(Dato not in mensaje[0]):
+        return FiltroEmpresaViajeAux(Dato, mensaje[1:], i)
     else:
-        print("Id reserva |   cliente  | N° viaje | Fecha/hora de reserva | Empresa, transporte | Lugar, fecha y hora salida | Lugar, fecha y hora llegada |asientos VIP| normal | económico | Monto de reserva")
+        print("N° viaje | Ciudad salida | Fecha/hora salida | Ciudad llegada | Fecha/hora llegada | Empresa | Transporte | Montos VIP - Normales - Económicos")
         print(mensaje[0])
         time.sleep(1)
-        return buscar4(salida, Llegada, mensaje[1:], cont+1)
-    return consultaViaje()
-def FiltroSalida():
-    print("Funcion no disponible")
-    return consultaViaje()
-def FiltroLlegada():
-    print("Funcion no disponible")
-    return consultaViaje()
-def FiltroFechaSalida():
-    print("Funcion no disponible")
-    return consultaViaje()
-def FiltroFechaLlegada():
-    print("Funcion no disponible")
-    return consultaViaje()
+        return FiltroEmpresaViajeAux(Dato, mensaje[1:], i+1)
+"========================================"
+def FiltroSalidaViaje(Dato):
+    f=open("Viajes.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    return FiltroSalidaViajeAux(Dato, mensaje, 0)
+def FiltroSalidaViajeAux(Dato, mensaje, i):
+    if mensaje==[]:
+        if i==0:
+            print("No se encontraron coincidencias")
+            time.sleep(0.5)
+            return consultaViaje()
+        else:
+            print("Total de coincidencias: ", i)
+            time.sleep(1)
+            return consultaViaje()
+    if(Dato not in mensaje[0]):
+        return FiltroSalidaViajeAux(Dato, mensaje[1:], i)
+    else:
+        print("N° viaje | Ciudad salida | Fecha/hora salida | Ciudad llegada | Fecha/hora llegada | Empresa | Transporte | Montos VIP - Normales - Económicos")
+        print(mensaje[0])
+        time.sleep(1)
+        return FiltroSalidaViajeAux(Dato, mensaje[1:], i+1)
+"========================================"
+def FiltroLlegadaViaje(Dato):
+    f=open("Viajes.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    return FiltroLlegadaViajeAux(Dato, mensaje, 0)
+def FiltroLlegadaViajeAux(Dato, mensaje, i):
+    if mensaje==[]:
+        if i==0:
+            print("No se encontraron coincidencias")
+            time.sleep(0.5)
+            return consultaViaje()
+        else:
+            print("Total de coincidencias: ", i)
+            time.sleep(1)
+            return consultaViaje()
+    if(Dato not in mensaje[0]):
+        return FiltroLlegadaViajeAux(Dato, mensaje[1:], i)
+    else:
+        print("N° viaje | Ciudad salida | Fecha/hora salida | Ciudad llegada | Fecha/hora llegada | Empresa | Transporte | Montos VIP - Normales - Económicos")
+        print(mensaje[0])
+        time.sleep(1)
+        return FiltroLlegadaViajeAux(Dato, mensaje[1:], i+1)
+"========================================"
+def FiltroFechaSalidaViaje(Dato):
+    f=open("Viajes.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    return FiltroFechaSalidaViajeAux(Dato, mensaje, 0)
+def FiltroFechaSalidaViajeAux(Dato, mensaje, i):
+    if mensaje==[]:
+        if i==0:
+            print("No se encontraron coincidencias")
+            time.sleep(0.5)
+            return consultaViaje()
+        else:
+            print("Total de coincidencias: ", i)
+            time.sleep(1)
+            return consultaViaje()
+    if(Dato not in mensaje[0]):
+        return FiltroFechaSalidaViajeAux(Dato, mensaje[1:], i)
+    else:
+        print("N° viaje | Ciudad salida | Fecha/hora salida | Ciudad llegada | Fecha/hora llegada | Empresa | Transporte | Montos VIP - Normales - Económicos")
+        print(mensaje[0])
+        time.sleep(1)
+        return FiltroFechaSalidaViajeAux(Dato, mensaje[1:], i+1)
+"========================================"
+def FiltroFechaLlegadaViaje(Dato):
+    f=open("Viajes.txt",'r')
+    mensaje = f.readlines()
+    f.close()
+    return FiltroFechaLlegadaViajeAux(Dato, mensaje, 0)
+def FiltroFechaLlegadaViajeAux(Dato, mensaje, i):
+    if mensaje==[]:
+        if i==0:
+            print("No se encontraron coincidencias")
+            time.sleep(0.5)
+            return consultaViaje()
+        else:
+            print("Total de coincidencias: ", i)
+            time.sleep(1)
+            return consultaViaje()
+    if(Dato not in mensaje[0]):
+        return FiltroFechaLlegadaViajeAux(Dato, mensaje[1:], i)
+    else:
+        print("N° viaje | Ciudad salida | Fecha/hora salida | Ciudad llegada | Fecha/hora llegada | Empresa | Transporte | Montos VIP - Normales - Económicos")
+        print(mensaje[0])
+        time.sleep(1)
+        return FiltroFechaLlegadaViajeAux(Dato, mensaje[1:], i+1)
 #====================================================================================================================================================
 """
 reserva
@@ -1522,7 +1714,7 @@ def buscarviaje(select, mensaje):
     if(select not in mensaje[0]):
         return buscarviaje(select, mensaje[1:])
     else:
-        dato=list((str(mensaje[0]))[0:])
+        dato=(list(str(mensaje[0]))[0:])
         return sacarDato(select, dato,[" "], [])
 def sacarDato(select, dato, sub, res):
     if dato==[]:
