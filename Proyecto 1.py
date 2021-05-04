@@ -1193,6 +1193,7 @@ def seleccionar(seleccion, datos):
     MontoVIP=datos[7]
     MontoNml=datos[8]
     MontoEcm=datos[9]
+    
     f=open("Asientos.txt", "r")
     asientos=f.readlines()
     f.close()
@@ -1202,7 +1203,7 @@ def Select_Asientos(asientos, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_
         print("Hubo un error inesperado.")
         return Menu()
     if(Trp not in asientos[0]):  
-        return (asientos[1:], seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm)
+        return Select_Asientos(asientos[1:], seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm)
     else:
         asiento=(list(str(asientos[0])))
         return Select_Aux(asiento, seleccion, Lug_Salida, FH_Salida, Lug_Llegada, FH_Llegada, Emp, Trp, MontoVIP, MontoNml, MontoEcm, [" "], [])
@@ -1433,7 +1434,7 @@ def restart():
     else:
         print("Digite una de las opciones disponibles")
         time.sleep(0.5)
-        return print(restart)
+        return restart()
         
 #====================================================================================================================================================
 """
@@ -1816,7 +1817,7 @@ def reservarAsientos(select, nombre,datos, asientos, VIP, NORMAL, ECONOM):
     for linea in lineas:
         if Trp not in linea:
             f.write(linea)
-        f.close()
+    f.close()
     VIPdisp= int(asientos[1])-int(VIP)
     NMLdisp= int(asientos[2])-int(NORMAL)
     ECNdisp= int(asientos[3])-int(ECONOM)
